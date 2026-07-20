@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CELPD · Espace de vote des candidatures</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230f766e'/%3E%3Ctext x='50' y='68' font-family='Arial Black,sans-serif' font-weight='900' font-size='30' fill='white' text-anchor='middle'%3ECELPD%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --brand:#0f766e; --brand-d:#0b5a54; --brand-2:#14b8a6; --accent:#0369a1;
+  --ink:#123b39; --paper:#eef6f4; --card:#fff; --line:#d7e6e2; --muted:#5d7b77;
+  --green:#0f766e; --green-bg:#e2f2ee; --red:#c0392b; --red-bg:#fbeceb;
+  --amber:#b5851a; --amber-bg:#fbf3df; --radius:14px;
+  --shadow:0 1px 2px rgba(15,78,74,.06),0 10px 30px rgba(15,78,74,.09);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:"Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);
+  background:var(--paper);line-height:1.5;font-size:15px}
+h1,h2,h3{margin:0;font-weight:700;letter-spacing:-.01em}
+a{color:var(--brand-d)}
+button{font-family:inherit;cursor:pointer}
+.hidden{display:none!important}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+
+/* gate */
+#gate{min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:20px;
+  background:linear-gradient(160deg,#0e4f4a,#0f766e 60%,#127c72)}
+.gate-card{background:#fff;border-radius:18px;box-shadow:var(--shadow);width:min(400px,94vw);padding:28px 26px;text-align:center}
+.gate-card .logo{width:150px;margin:0 auto 12px;display:block}
+.gate-card h1{font-size:19px}.gate-card .sub{color:var(--muted);font-size:13px;margin:4px 0 20px}
+.field{text-align:left;margin-bottom:14px}
+.field label{display:block;font-size:12.5px;font-weight:600;color:var(--muted);margin-bottom:5px}
+.field input,.field select,.field textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;font-size:16px;background:#fff;color:var(--ink)}
+.field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(15,118,110,.14)}
+.btn{display:inline-flex;align-items:center;gap:8px;justify-content:center;border:none;background:var(--brand);color:#fff;
+  padding:12px 18px;border-radius:10px;font-weight:600;font-size:14px;transition:background .2s;min-height:44px}
+.btn:hover{background:var(--brand-d)}
+.btn.block{width:100%}
+.btn.ghost{background:#fff;color:var(--brand-d);border:1px solid var(--line)}
+.btn.ghost:hover{background:#eef6f4}
+.btn.accent{background:var(--accent)}.btn.accent:hover{background:#02537f}
+.btn.sm{padding:8px 12px;font-size:13px;border-radius:9px;min-height:40px}
+.btn.green{background:var(--green)}.btn.red{background:var(--red)}.btn.red:hover{background:#a03225}
+.err{color:var(--red);font-size:13px;margin-top:8px;min-height:16px}
+.hint{font-size:12px;color:var(--muted);margin-top:14px;border-top:1px dashed var(--line);padding-top:12px;text-align:left}
+.hint code{background:#e6f0ed;padding:1px 6px;border-radius:5px}
+.madeby{margin-top:14px;font-size:12px;color:var(--muted);display:flex;gap:5px;justify-content:center;align-items:center}
+.madeby a{color:var(--brand-d);text-decoration:none}.madeby a:hover{text-decoration:underline}
+.deadline{font-size:12px;font-weight:600;color:var(--amber);margin-top:8px}
+.deadline.closed{color:var(--red)}
+
+/* header */
+header.top{background:var(--brand);color:#fff;position:sticky;top:0;z-index:20;box-shadow:0 2px 14px rgba(15,78,74,.18)}
+.top .wrap{display:flex;align-items:center;gap:13px;height:64px}
+.top .logo{width:44px;height:44px;border-radius:10px;background:#fff;padding:3px;flex:0 0 auto;display:flex;overflow:hidden}
+.top .logo svg{width:100%;height:100%}
+.top .brand{font-weight:800;font-size:16px;letter-spacing:.02em;line-height:1.05}
+.top .brand small{display:block;font-weight:400;opacity:.75;font-size:10.5px;letter-spacing:.05em;margin-top:2px}
+.top .right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.guest{display:flex;align-items:center;gap:8px;font-size:12.5px;color:#d6efe9;background:rgba(255,255,255,.12);padding:6px 11px;border-radius:20px}
+.guest .dot{width:8px;height:8px;border-radius:50%;background:var(--brand-2)}
+.top .right button{background:rgba(255,255,255,.14);border:none;color:#fff;font-size:12.5px;font-weight:600;padding:8px 12px;border-radius:9px}
+.top .right button:hover{background:rgba(255,255,255,.24)}
+
+main{padding:24px 0 60px}
+.intro{display:flex;gap:16px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:16px 20px;margin-bottom:22px}
+.intro .co{font-size:12px;color:var(--muted)}
+.intro h2{font-size:20px;margin-top:2px}
+.intro .base{font-size:13px;color:var(--muted);font-style:italic;margin-top:3px}
+
+.sec-head{display:flex;align-items:center;gap:10px;margin:26px 0 12px}
+.sec-head h3{font-size:17px}
+.sec-head .count{font-size:12px;font-weight:700;color:var(--brand-d);background:#e2f2ee;padding:2px 9px;border-radius:20px}
+.sec-head .sp{margin-left:auto}
+
+.grid{display:grid;gap:16px}
+.grid.k2{grid-template-columns:repeat(2,1fr)}
+.grid.k4{grid-template-columns:repeat(4,1fr)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.card.pad{padding:20px}
+.stat{padding:16px 18px}
+.stat .n{font-size:27px;font-weight:800;color:var(--brand-d)}
+.stat .l{font-size:11.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+
+.cand{overflow:hidden}
+.cand .body{padding:18px 20px}
+.cand .h{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.cand .co{font-size:17px;font-weight:700}
+.cand .sector{color:var(--muted);font-size:13px;margin-top:2px}
+.cand dl{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:12px 0 0;font-size:13px}
+.cand dt{color:var(--muted);font-weight:600}.cand dd{margin:0}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.tag{background:#e4f0ed;color:var(--brand-d);font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:20px}
+.badge{font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:20px;white-space:nowrap}
+.badge.pending{background:var(--amber-bg);color:var(--amber)}
+.badge.acc{background:var(--green-bg);color:var(--green)}
+.badge.rej{background:var(--red-bg);color:var(--red)}
+.chip{display:inline-block;background:var(--accent);color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px}
+.votebar{height:10px;border-radius:6px;background:#e5efec;overflow:hidden;display:flex;margin:14px 0 8px}
+.votebar i{display:block;height:100%}
+.votebar .for{background:var(--brand)}.votebar .against{background:var(--red)}.votebar .abst{background:#bcccc8}
+.tally{display:flex;gap:16px;font-size:12.5px;color:var(--muted);font-weight:600}.tally b{color:var(--ink)}
+.foot{display:flex;gap:8px;align-items:center;padding:14px 20px;border-top:1px solid var(--line);background:#f7fbfa;flex-wrap:wrap}
+.foot .btn.sm{flex:1 1 auto}
+.myvote{font-size:12.5px;font-weight:600;padding:8px 11px;border-radius:8px;background:#e4f0ed;flex:1 1 100%}
+.decided{font-size:12px;color:var(--muted);margin-left:auto}
+
+/* charts */
+.viz{padding:18px 20px}
+.viz h4{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin:0 0 14px}
+.donut-wrap{display:flex;align-items:center;gap:18px}
+.legend{font-size:13px;display:flex;flex-direction:column;gap:7px}
+.legend span{display:flex;align-items:center;gap:8px}
+.legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+.legend b{margin-left:4px}
+.hbars{display:flex;flex-direction:column;gap:11px}
+.hbar{font-size:13px}
+.hbar .lab{display:flex;justify-content:space-between;margin-bottom:4px}
+.hbar .track{height:9px;background:#e5efec;border-radius:5px;overflow:hidden}
+.hbar .fill{height:100%;border-radius:5px;background:var(--brand)}
+
+/* modal */
+.overlay{position:fixed;inset:0;background:rgba(9,45,42,.55);display:flex;align-items:center;justify-content:center;z-index:40;padding:16px}
+.modal{background:#fff;border-radius:16px;box-shadow:var(--shadow);width:min(560px,96vw);max-height:92vh;overflow:auto}
+.modal .m-head{padding:18px 22px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.modal .m-body{padding:20px 22px}
+.modal .m-foot{padding:16px 22px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+.x{background:none;border:none;font-size:22px;color:var(--muted)}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.formgrid .full{grid-column:1/-1}
+.chk{display:flex;flex-wrap:wrap;gap:8px}
+.chk label{display:flex;align-items:center;gap:6px;font-size:13px;background:#fff;border:1px solid var(--line);padding:7px 11px;border-radius:9px;cursor:pointer}
+.chk label:has(input:checked){border-color:var(--brand);background:#e4f0ed;font-weight:600}
+.req{color:var(--red)}
+.note{background:var(--amber-bg);border:1px solid #f0e0b8;border-radius:12px;padding:13px 15px;font-size:12.5px;color:#6b5410}
+.note b{color:#4d3c09}
+.empty{text-align:center;padding:36px 20px;color:var(--muted)}
+footer.legal{border-top:1px solid var(--line);padding:24px 0;color:var(--muted);font-size:12px;background:#fff}
+footer.legal b{color:var(--ink)}
+
+@media(max-width:820px){
+  .grid.k2,.grid.k4,.formgrid{grid-template-columns:1fr}
+  .wrap{padding:0 15px}
+  .top .brand small{display:none}
+  .guest span{display:none}
+  .intro{flex-direction:row}
+  .intro h2{font-size:17px}
+}
+</style>
+</head>
+<body>
+
+<!-- ====== GATE ====== -->
+<div id="gate">
+  <div class="gate-card">
+    <div class="logo" id="gate-logo"></div>
+    <h1>Espace de vote des candidatures</h1>
+    <div class="sub">Club des Entreprises Lyon Part‑Dieu</div>
+    <div class="field"><label>Nom de votre entreprise</label>
+      <input id="gt-company" type="text" placeholder="Ex. Covivio" autocomplete="organization"></div>
+    <div class="field"><label>Code d'accès</label>
+      <input id="gt-code" type="text" autocapitalize="characters" placeholder="CELPD••••" autocomplete="one-time-code"></div>
+    <button class="btn block" onclick="enter()">Entrer</button>
+    <div class="err" id="gt-err"></div>
+    <div class="hint"><b>Compte invité</b> — accès par lien + code simple&nbsp;: <code>CELPD26#</code><br>
+      <span style="opacity:.75">Une entreprise = un vote par candidature.</span></div>
+    <div class="madeby"><span>Créé par</span>
+      <a href="https://exoflow.fr" target="_blank" rel="noopener"><b>Exoflow</b></a>
+      <span>· outils métiers IA</span></div>
+  </div>
+</div>
+
+<!-- ====== APP (page unique) ====== -->
+<div id="app" class="hidden">
+  <header class="top"><div class="wrap">
+    <div class="logo" id="top-logo"></div>
+    <div class="brand">CELPD<small>ESPACE DE VOTE</small></div>
+    <div class="right">
+      <span class="guest"><span class="dot"></span><span>Compte invité</span></span>
+      <button onclick="openNew()">+ Candidature</button>
+      <button onclick="exportCSV()">⇩ Export</button>
+    </div>
+  </div></header>
+  <main><div class="wrap" id="view"></div></main>
+  <footer class="legal"><div class="wrap" id="legal"></div></footer>
+</div>
+
+<div id="modal-root"></div>
+
+<script>
+/* ===== logo (carte du quartier Part-Dieu) — image fournie par le Club ===== */
+const LOGO='<img src="assets/celpd-logo.png" alt="CELPD — Lyon Part-Dieu" style="width:100%;height:100%;object-fit:contain;display:block">';
+
+const DOMAINS=["Culture & communication","Immobilier","Innovation / IA","Mobilité (PMIE)",
+  "Ressources humaines","Développement durable / RSE","Numérique","Développement commercial"];
+const TIERS=[{v:1600,label:"1 600 € — Grand compte"},{v:850,label:"850 € — Grande entreprise"},
+  {v:600,label:"600 € — Entreprise intermédiaire"},{v:350,label:"350 € — Petite structure"},
+  {v:180,label:"180 € — TPE / indépendant"},{v:0,label:"Partenaire (0 €)"}];
+function tierShort(v){return v?v.toLocaleString('fr-FR')+' €':'Partenaire';}
+const CA_VOTERS=7, QUORUM=4;
+const ACCESS_CODE="CELPD26#";
+let SESSION=null;
+const DB_KEY="celpd_vote_v4";
+const VOTE_WEEKS_MAX=5;
+function ckey(name){return "co:"+(name||"").trim().toLowerCase().replace(/\s+/g," ");}
+function addWeeks(iso,w){const d=new Date(iso+"T00:00:00");d.setDate(d.getDate()+w*7);return d.toISOString().slice(0,10);}
+function todayISO(){return new Date().toISOString().slice(0,10);}
+function isClosed(c){return c.voteEnd && todayISO()>c.voteEnd;}
+
+/* ===== données (réinitialisées à chaque connexion — démo, en mémoire) ===== */
+function seed(){return{
+  candidatures:[
+    {id:1,status:"pending",created:"2026-06-18",voteEnd:"2026-07-23",company:"Atelier Kairos",sector:"Architecture d'intérieur & agencement",
+      size:"12 salariés",tier:350,address:"Tour Oxygène, 10‑12 bd Vivier‑Merle, 69003 Lyon",referent:"Léa Marchand",
+      referentMail:"lea.marchand@atelierkairos.fr",referentPhone:"06 12 34 56 78",sponsor:"Kardham",
+      motivation:"Nous accompagnons plusieurs sièges du quartier sur l'aménagement des espaces de travail et souhaitons contribuer aux ateliers Immobilier.",
+      domains:["Immobilier","Développement durable / RSE","Innovation / IA"],
+      votes:[{by:"claire",v:"for",c:"Profil pertinent."},{by:"yann",v:"for",c:""}]},
+    {id:2,status:"pending",created:"2026-06-25",voteEnd:"2026-07-30",company:"DataPart Solutions",sector:"Éditeur logiciel / IA",
+      size:"34 salariés",tier:600,address:"Silex², 45 rue Garibaldi, 69006 Lyon",referent:"Karim Benali",
+      referentMail:"k.benali@datapart.io",referentPhone:"07 88 21 09 44",sponsor:"",
+      motivation:"Acteur IA du quartier, nous voulons animer des ateliers IA pour les PME du Club.",
+      domains:["Innovation / IA","Numérique","Développement commercial"],votes:[{by:"claire",v:"abstain",c:"Ancrage local à confirmer."}]},
+    {id:3,status:"accepted",created:"2026-05-12",decided:"2026-05-28",company:"Halles Bocuse — Comptoir",sector:"Commerce / restauration",
+      size:"9 salariés",tier:180,address:"Halles Paul Bocuse, 102 cours Lafayette, 69003 Lyon",referent:"Sophie Ravel",
+      referentMail:"sophie@comptoir-halles.fr",referentPhone:"06 45 78 12 90",sponsor:"Lyon Parc Auto",
+      motivation:"Commerce emblématique, envie de contribuer aux ateliers Culture.",
+      domains:["Culture & communication","Développement durable / RSE"],
+      votes:[{by:"claire",v:"for"},{by:"yann",v:"for"},{by:"membre",v:"for"},{by:"marlene",v:"for"}]},
+    {id:4,status:"accepted",created:"2026-03-08",decided:"2026-03-24",company:"Cabinet Verlaine RH",sector:"Conseil RH",
+      size:"18 salariés",tier:350,address:"Le Britannia, 20 bd Deruelle, 69003 Lyon",referent:"Paul Verlaine",
+      referentMail:"contact@verlaine-rh.fr",referentPhone:"06 33 55 77 11",sponsor:"EY",
+      motivation:"Envie d'animer les Matinales RH du Club.",domains:["Ressources humaines","Innovation / IA"],
+      votes:[{by:"claire",v:"for"},{by:"yann",v:"for"},{by:"membre",v:"for"},{by:"marlene",v:"for"},{by:"paul",v:"for"}]},
+    {id:5,status:"rejected",created:"2026-02-10",decided:"2026-02-27",company:"PubMax Régie",sector:"Régie publicitaire",
+      size:"6 salariés",tier:180,address:"Hors quartier — 69100 Villeurbanne",referent:"Éric Sabot",
+      referentMail:"e.sabot@pubmax.fr",referentPhone:"06 00 11 22 33",sponsor:"",
+      motivation:"Prospection commerciale auprès des adhérents.",domains:["Développement commercial"],
+      votes:[{by:"claire",v:"against",c:"Hors périmètre Part‑Dieu, démarche commerciale."},{by:"yann",v:"against"},
+             {by:"membre",v:"against"},{by:"marlene",v:"abstain"}]},
+    {id:6,status:"accepted",created:"2026-01-14",decided:"2026-01-30",company:"MobiliCité",sector:"Mobilité douce",
+      size:"22 salariés",tier:600,address:"Incity, 116 bd Vivier‑Merle, 69003 Lyon",referent:"Nadia Rekik",
+      referentMail:"nadia@mobilicite.fr",referentPhone:"06 74 85 96 07",sponsor:"Keolis Lyon",
+      motivation:"Contribuer au Plan de Mobilité Inter‑Entreprises (PMIE).",domains:["Mobilité (PMIE)","Développement durable / RSE"],
+      votes:[{by:"claire",v:"for"},{by:"yann",v:"for"},{by:"membre",v:"for"},{by:"marlene",v:"for"},{by:"paul",v:"abstain"}]},
+    {id:7,status:"rejected",created:"2025-11-19",decided:"2025-12-05",company:"CloudNine SSII",sector:"Prestation IT",
+      size:"120 salariés",tier:850,address:"69007 Lyon (Gerland)",referent:"Marc Aubert",
+      referentMail:"m.aubert@cloudnine.fr",referentPhone:"06 55 44 33 22",sponsor:"",
+      motivation:"Développer notre visibilité.",domains:["Numérique"],
+      votes:[{by:"claire",v:"against"},{by:"yann",v:"abstain"},{by:"membre",v:"against"},{by:"marlene",v:"against"}]},
+  ],
+  seq:8
+};}
+/* ============================================================
+   SAUVEGARDE DES VOTES — deux modes automatiques :
+   • API_URL vide  → mode LOCAL (localStorage de ce navigateur, votes non partagés).
+   • API_URL rempli→ mode PARTAGÉ : lecture/écriture dans un Google Sheet via Apps Script
+     (tous les membres votent sur la même base). Colle ici l'URL du déploiement Web App.
+     Procédure : voir apps-script/Code.gs et le README (« Sauvegarde des votes »).
+   ============================================================ */
+const API_URL=""; // ex: "https://script.google.com/macros/s/AKfy.../exec"
+
+let DB={candidatures:[],seq:1};
+function loadLocal(){try{const r=localStorage.getItem(DB_KEY);if(r)return JSON.parse(r);}catch(e){}return seed();}
+function saveLocal(){try{localStorage.setItem(DB_KEY,JSON.stringify(DB));}catch(e){}}
+function normalize(st){st=st||{};const cs=(st.candidatures||[]).map(c=>Object.assign({votes:[]},c));
+  return {candidatures:cs,seq:st.seq||(cs.reduce((m,c)=>Math.max(m,c.id),0)+1)};}
+async function apiGet(){const r=await fetch(API_URL,{method:"GET"});return normalize(await r.json());}
+async function apiPost(payload){const r=await fetch(API_URL,{method:"POST",body:JSON.stringify(payload)});return normalize(await r.json());}
+async function pull(){DB=API_URL?await apiGet():normalize(loadLocal());}
+
+
+/* ===== gate ===== */
+document.getElementById("gate-logo").innerHTML=LOGO;
+async function enter(){
+  const code=document.getElementById("gt-code").value.trim();
+  const err=document.getElementById("gt-err");
+  if(code!==ACCESS_CODE){err.textContent="Code d'accès incorrect.";return;}
+  const company=document.getElementById("gt-company").value.trim();
+  if(!company){err.textContent="Indiquez le nom de votre entreprise.";return;}
+  SESSION={id:ckey(company),name:company};
+  document.getElementById("gate").classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
+  document.getElementById("top-logo").innerHTML=LOGO;
+  document.getElementById("view").innerHTML='<div class="card empty">Chargement…</div>';
+  renderLegal();
+  try{await pull();}catch(e){DB=normalize(loadLocal());}
+  render();reminder();
+}
+document.addEventListener("keydown",e=>{if(e.key==="Enter"&&!document.getElementById("gate").classList.contains("hidden"))return;
+  if(e.key==="Enter"&&document.getElementById("app").classList.contains("hidden"))enter();});
+(function(){const m=(location.hash||"").match(/code=([^&]+)/);if(m){document.getElementById("gt-code").value=decodeURIComponent(m[1]);}})();
+
+function reminder(){
+  modal("Bienvenue 👋 — "+SESSION.name,
+    `<p style="margin-top:0">Vous votez au nom de <b>${esc(SESSION.name)}</b>.</p>
+     <ul style="margin:0;padding-left:18px;color:#39544f;font-size:14px">
+       <li><b>Une entreprise = un vote</b> par candidature.</li>
+       <li>Le vote est ouvert jusqu'à sa <b>date de fin</b> (5 semaines max après le dépôt).</li>
+       <li>Vos votes sont <b>enregistrés dans ce navigateur</b> et alimentent l'historique et les graphiques.</li>
+       <li><b>⇩ Export</b> pour récupérer l'historique en CSV.</li>
+     </ul>`,
+    `<button class="btn" onclick="closeModal()">J'ai compris</button>`);
+}
+
+/* ===== helpers ===== */
+function tally(c){const t={for:0,against:0,abstain:0};c.votes.forEach(v=>t[v.v]++);return t;}
+function fmt(d){if(!d)return"—";const[y,m,day]=d.split("-");return`${day}/${m}/${y}`;}
+function esc(s){return(s||"").replace(/[&<>"]/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[x]));}
+function myVote(c){return c.votes.find(v=>v.by===SESSION.id);}
+
+/* ===== render (page unique) ===== */
+function render(){
+  const pending=DB.candidatures.filter(c=>c.status==="pending");
+  const decided=DB.candidatures.filter(c=>c.status!=="pending").sort((a,b)=>(b.decided||"").localeCompare(a.decided||""));
+  document.getElementById("view").innerHTML=`
+    <div class="intro">
+      <div style="flex:1"><div class="co">CLUB DES ENTREPRISES LYON PART‑DIEU · fondé 2012</div>
+        <h2>Vote des candidatures d'adhésion</h2>
+        <div class="base">« Les échanges facilitent le quotidien des entreprises et celui des collaborateurs. »</div></div>
+    </div>
+
+    <div class="grid k4">
+      ${stat(pending.length,"En attente")}
+      ${stat(DB.candidatures.filter(c=>c.status==="accepted").length,"Acceptées")}
+      ${stat(DB.candidatures.filter(c=>c.status==="rejected").length,"Refusées")}
+      ${stat(DB.candidatures.reduce((s,c)=>s+c.votes.length,0),"Votes exprimés")}
+    </div>
+
+    <div class="sec-head"><h3>À voter</h3><span class="count">${pending.length}</span></div>
+    ${pending.length?`<div class="grid">${pending.map(candCard).join("")}</div>`:
+      `<div class="card empty">Aucune candidature en attente.</div>`}
+
+    <div class="sec-head"><h3>Historique & résultats</h3><span class="count">${decided.length}</span></div>
+    <div class="grid k2">${decided.map(histCard).join("")}</div>
+
+    <div class="sec-head"><h3>Visualisation des votes</h3></div>
+    ${dataviz()}`;
+}
+function stat(n,l){return`<div class="card stat"><div class="n">${n}</div><div class="l">${l}</div></div>`;}
+
+function candCard(c){
+  const t=tally(c),total=t.for+t.against+t.abstain||1,mine=myVote(c),closed=isClosed(c);
+  return `<div class="card cand"><div class="body">
+    <div class="h"><div><div class="co">${esc(c.company)} <span class="chip">${tierShort(c.tier)}</span></div>
+      <div class="sector">${esc(c.sector)} · ${esc(c.size)}</div></div><span class="badge pending">● En attente</span></div>
+    <dl><dt>Référent</dt><dd>${esc(c.referent)} — <a href="mailto:${esc(c.referentMail)}">${esc(c.referentMail)}</a></dd>
+      <dt>Adresse</dt><dd>${esc(c.address)}</dd>${c.sponsor?`<dt>Parrain·e</dt><dd>${esc(c.sponsor)}</dd>`:""}
+      <dt>Déposée le</dt><dd>${fmt(c.created)}</dd></dl>
+    <div class="tags">${c.domains.map(d=>`<span class="tag">${esc(d)}</span>`).join("")}</div>
+    <p style="font-size:13px;color:#39544f;margin:12px 0 0"><b>Motivation.</b> ${esc(c.motivation)}</p>
+    ${c.voteEnd?`<div class="deadline ${closed?'closed':''}">${closed?'🔒 Votes clos le '+fmt(c.voteEnd):"🗓️ Votes ouverts jusqu'au "+fmt(c.voteEnd)}</div>`:""}
+    ${voteBar(t,total)}
+    <div class="tally"><span>Pour <b>${t.for}</b></span><span>Contre <b>${t.against}</b></span>
+      <span>Abst. <b>${t.abstain}</b></span><span style="margin-left:auto">${c.votes.length}/${CA_VOTERS}</span></div>
+  </div>
+  <div class="foot">${
+    closed?`<span class="myvote">🔒 Votes clos le ${fmt(c.voteEnd)} — en attente de décision du CA.${mine?' Votre vote : '+voteLabel(mine.v):''}</span>`:
+    mine?`<span class="myvote">✓ ${esc(SESSION.name)} a voté : ${voteLabel(mine.v)} — merci ! (un seul vote par candidature)</span>`:
+    `<button class="btn green sm" onclick="vote(${c.id},'for')">Pour</button>
+     <button class="btn red sm" onclick="vote(${c.id},'against')">Contre</button>
+     <button class="btn ghost sm" onclick="vote(${c.id},'abstain')">Abstention</button>`}
+  </div></div>`;
+}
+function histCard(c){
+  const t=tally(c),total=t.for+t.against+t.abstain||1;
+  const badge=c.status==="accepted"?`<span class="badge acc">✓ Acceptée</span>`:`<span class="badge rej">✕ Refusée</span>`;
+  return `<div class="card cand"><div class="body">
+    <div class="h"><div><div class="co" style="font-size:15px">${esc(c.company)} <span class="chip">${tierShort(c.tier)}</span></div>
+      <div class="sector">${esc(c.sector)}</div></div>${badge}</div>
+    ${voteBar(t,total)}
+    <div class="tally"><span>Pour <b>${t.for}</b></span><span>Contre <b>${t.against}</b></span>
+      <span>Abst. <b>${t.abstain}</b></span><span class="decided">Décidée le ${fmt(c.decided)}</span></div>
+  </div></div>`;
+}
+function voteBar(t,total){return`<div class="votebar"><i class="for" style="width:${t.for/total*100}%"></i>
+  <i class="against" style="width:${t.against/total*100}%"></i><i class="abst" style="width:${t.abstain/total*100}%"></i></div>`;}
+function voteLabel(v){return{for:"✅ Pour",against:"❌ Contre",abstain:"⚪ Abstention"}[v];}
+
+/* un seul vote par candidature (invité) */
+async function vote(id,v){
+  const c=DB.candidatures.find(x=>x.id===id);
+  if(!c||isClosed(c)||myVote(c))return;
+  c.votes.push({by:SESSION.id,company:SESSION.name,v,c:""});render(); // optimiste
+  if(API_URL){try{DB=await apiPost({action:"vote",candidatureId:id,companyKey:SESSION.id,company:SESSION.name,vote:v});}catch(e){}render();}
+  else saveLocal();
+}
+
+/* ===== data-viz (SVG/CSS, sans dépendance) ===== */
+function dataviz(){
+  const cs=DB.candidatures;
+  const status={"En attente":cs.filter(c=>c.status==="pending").length,
+    "Acceptées":cs.filter(c=>c.status==="accepted").length,
+    "Refusées":cs.filter(c=>c.status==="rejected").length};
+  const vTot={Pour:0,Contre:0,Abstention:0};
+  cs.forEach(c=>{const t=tally(c);vTot.Pour+=t.for;vTot.Contre+=t.against;vTot.Abstention+=t.abstain;});
+  const tiers={};cs.forEach(c=>{const k=tierShort(c.tier);tiers[k]=(tiers[k]||0)+1;});
+  const doms={};cs.forEach(c=>c.domains.forEach(d=>doms[d]=(doms[d]||0)+1));
+  const topDoms=Object.entries(doms).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  return `<div class="grid k2">
+    <div class="card viz"><h4>Décisions</h4>
+      ${donut([["Acceptées",status["Acceptées"],"#0f766e"],["Refusées",status["Refusées"],"#c0392b"],["En attente",status["En attente"],"#b5851a"]])}</div>
+    <div class="card viz"><h4>Votes cumulés</h4>
+      ${hbars([["Pour",vTot.Pour,"#0f766e"],["Contre",vTot.Contre,"#c0392b"],["Abstention",vTot.Abstention,"#bcccc8"]])}</div>
+    <div class="card viz"><h4>Candidatures par palier de cotisation</h4>
+      ${hbars(Object.entries(tiers).sort((a,b)=>b[1]-a[1]).map(([k,v])=>[k,v,"#0369a1"]))}</div>
+    <div class="card viz"><h4>Thématiques les plus demandées</h4>
+      ${hbars(topDoms.map(([k,v])=>[k,v,"#14b8a6"]))}</div>
+  </div>`;
+}
+function donut(data){
+  const tot=data.reduce((s,d)=>s+d[1],0)||1;let a=-90;const R=54,C=2*Math.PI*R;
+  const segs=data.map(([l,v,col])=>{const frac=v/tot,len=frac*C;
+    const el=`<circle r="${R}" cx="70" cy="70" fill="none" stroke="${col}" stroke-width="22"
+      stroke-dasharray="${len} ${C-len}" stroke-dashoffset="${-((a+90)/360)*C}" transform="rotate(-90 70 70)"/>`;
+    a+=frac*360;return el;}).join("");
+  const legend=data.map(([l,v,col])=>`<span><i style="background:${col}"></i>${l}<b>${v}</b></span>`).join("");
+  return `<div class="donut-wrap"><svg width="140" height="140" viewBox="0 0 140 140">${segs}
+    <text x="70" y="66" text-anchor="middle" font-size="24" font-weight="800" fill="#0b5a54">${tot}</text>
+    <text x="70" y="86" text-anchor="middle" font-size="10" fill="#5d7b77">CANDID.</text></svg>
+    <div class="legend">${legend}</div></div>`;
+}
+function hbars(data){
+  const max=Math.max(1,...data.map(d=>d[1]));
+  return `<div class="hbars">${data.map(([l,v,col])=>
+    `<div class="hbar"><div class="lab"><span>${esc(l)}</span><b>${v}</b></div>
+     <div class="track"><div class="fill" style="width:${v/max*100}%;background:${col}"></div></div></div>`).join("")}</div>`;
+}
+
+/* ===== nouvelle candidature ===== */
+function openNew(){
+  modal("Déposer une candidature d'adhésion",`
+    <form id="cand-form" onsubmit="submitCand(event)"><div class="formgrid">
+      <div class="field full"><label>Raison sociale <span class="req">*</span></label><input name="company" required></div>
+      <div class="field"><label>Secteur d'activité <span class="req">*</span></label><input name="sector" required></div>
+      <div class="field"><label>Effectif</label><input name="size" placeholder="Ex. 12 salariés"></div>
+      <div class="field"><label>Palier de cotisation <span class="req">*</span></label>
+        <select name="tier" required>${TIERS.map(t=>`<option value="${t.v}">${t.label}</option>`).join("")}</select></div>
+      <div class="field"><label>Parrain·e (facultatif)</label><input name="sponsor"></div>
+      <div class="field full"><label>Date de fin des votes <span class="req">*</span>
+        <span style="font-weight:400;color:var(--muted)"> — 5 semaines max après le dépôt</span></label>
+        <input name="voteEnd" type="date" required min="${todayISO()}" max="${addWeeks(todayISO(),VOTE_WEEKS_MAX)}" value="${addWeeks(todayISO(),VOTE_WEEKS_MAX)}"></div>
+      <div class="field full"><label>Adresse (quartier Part‑Dieu) <span class="req">*</span></label><input name="address" required></div>
+      <div class="field"><label>Contact référent <span class="req">*</span></label><input name="referent" required></div>
+      <div class="field"><label>E‑mail référent <span class="req">*</span></label><input name="referentMail" type="email" required></div>
+      <div class="field full"><label>Thématiques d'intérêt</label>
+        <div class="chk">${DOMAINS.map(d=>`<label><input type="checkbox" name="dom" value="${esc(d)}">${esc(d)}</label>`).join("")}</div></div>
+      <div class="field full"><label>Motivation <span class="req">*</span></label><textarea name="motivation" rows="3" required></textarea></div>
+    </div>
+    <div class="note full" style="margin-top:4px"><b>RGPD.</b> Coordonnées traitées par le CELPD aux seules fins d'instruction de la candidature ;
+      droits d'accès/rectification/effacement : <a href="mailto:contact@clubpartdieu.fr">contact@clubpartdieu.fr</a>.
+      <label style="display:flex;gap:8px;margin-top:8px"><input type="checkbox" required> J'accepte. <span class="req">*</span></label></div>
+    </form>`,
+    `<button class="btn ghost" onclick="closeModal()">Annuler</button>
+     <button class="btn accent" onclick="document.getElementById('cand-form').requestSubmit()">Soumettre au vote</button>`);
+}
+function submitCand(e){
+  e.preventDefault();const f=e.target,g=n=>f.elements[n].value.trim();
+  const doms=[...f.querySelectorAll('input[name=dom]:checked')].map(x=>x.value);
+  const created=todayISO();const maxEnd=addWeeks(created,VOTE_WEEKS_MAX);
+  let voteEnd=f.elements.voteEnd.value||maxEnd;
+  if(voteEnd>maxEnd)voteEnd=maxEnd; if(voteEnd<created)voteEnd=created;   // borne : ≤ 5 semaines
+  const cand={id:DB.seq++,status:"pending",created,voteEnd,
+    company:g("company"),sector:g("sector"),size:g("size")||"—",tier:parseInt(f.elements.tier.value,10),
+    address:g("address"),referent:g("referent"),referentMail:g("referentMail"),referentPhone:"—",
+    sponsor:g("sponsor"),motivation:g("motivation"),domains:doms,votes:[]};
+  DB.candidatures.unshift(cand);closeModal();render(); // optimiste
+  if(API_URL){apiPost({action:"candidature",candidature:cand}).then(st=>{DB=st;render();}).catch(()=>{});}
+  else saveLocal();
+}
+
+/* ===== export (garder l'historique) ===== */
+function exportCSV(){
+  // neutralise l'injection de formule CSV (champs commençant par = + - @) puis échappe
+  const cell=x=>{let s=String(x);if(/^[=+\-@\t\r]/.test(s))s="'"+s;return`"${s.replace(/"/g,'""')}"`;};
+  const h=["id","statut","entreprise","secteur","palier","referent","pour","contre","abstention","cree","decide"];
+  const rows=DB.candidatures.map(c=>{const t=tally(c);
+    return[c.id,c.status,c.company,c.sector,c.tier,c.referent,t.for,t.against,t.abstain,c.created,c.decided||""]
+      .map(cell).join(",");});
+  const b=new Blob(["﻿"+h.join(",")+"\n"+rows.join("\n")],{type:"text/csv"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="celpd-historique-votes.csv";a.click();
+}
+
+/* ===== modal ===== */
+function modal(title,body,foot){document.getElementById("modal-root").innerHTML=
+  `<div class="overlay" onclick="if(event.target===this)closeModal()"><div class="modal">
+    <div class="m-head"><h3 style="font-size:16px">${title}</h3><button class="x" onclick="closeModal()">×</button></div>
+    <div class="m-body">${body}</div><div class="m-foot">${foot}</div></div></div>`;}
+function closeModal(){document.getElementById("modal-root").innerHTML="";}
+
+function renderLegal(){document.getElementById("legal").innerHTML=
+  `<b>CELPD — Club des Entreprises Lyon Part‑Dieu</b> · Association loi 1901 fondée en 2012 · SIRET 753 985 142 00011 ·
+   <a href="mailto:contact@clubpartdieu.fr">contact@clubpartdieu.fr</a> · <a href="https://www.clubpartdieu.fr">clubpartdieu.fr</a><br>
+   <span style="opacity:.85">Créé par <a href="https://exoflow.fr" target="_blank" rel="noopener"><b>Exoflow</b></a> — création d'outils métiers IA · <a href="https://exoflow.fr" target="_blank" rel="noopener">exoflow.fr</a></span><br>
+   <span style="opacity:.7">Prototype — votes enregistrés localement dans ce navigateur (voir « sauvegarde des votes »).</span>`;}
+</script>
+</body>
+</html>
