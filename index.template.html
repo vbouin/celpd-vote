@@ -234,12 +234,20 @@ function seed(){return{
      (tous les membres votent sur la même base). Colle ici l'URL du déploiement Web App.
      Procédure : voir apps-script/Code.gs et le README (« Sauvegarde des votes »).
    ============================================================ */
-const API_URL=""; // ex: "https://script.google.com/macros/s/AKfy.../exec"
+const API_URL="https://script.google.com/macros/s/AKfycbzdI2QzXMlzstMM23vC3kLUXNY8rahXBZIwl0obHIj6agI43NWvjt1oLuOUX4YNMUrqyg/exec";
 
 let DB={candidatures:[],seq:1};
 function loadLocal(){try{const r=localStorage.getItem(DB_KEY);if(r)return JSON.parse(r);}catch(e){}return seed();}
 function saveLocal(){try{localStorage.setItem(DB_KEY,JSON.stringify(DB));}catch(e){}}
-function normalize(st){st=st||{};const cs=(st.candidatures||[]).map(c=>Object.assign({votes:[]},c));
+function toISO(v){if(!v)return"";var s=String(v);
+  var m=s.match(/^(\d{4})-(\d{2})-(\d{2})/);if(m)return m[1]+"-"+m[2]+"-"+m[3];
+  // Sheets renvoie une date longue "Wed Jul 15 2026 ..." → extraire sans passer par UTC (évite le -1 jour)
+  var MM={Jan:"01",Feb:"02",Mar:"03",Apr:"04",May:"05",Jun:"06",Jul:"07",Aug:"08",Sep:"09",Oct:"10",Nov:"11",Dec:"12"};
+  var d2=s.match(/\b([A-Z][a-z]{2}) (\d{1,2}) (\d{4})\b/);
+  if(d2&&MM[d2[1]])return d2[3]+"-"+MM[d2[1]]+"-"+("0"+d2[2]).slice(-2);
+  var d=new Date(s);return isNaN(d)?s:d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2);}
+function normalize(st){st=st||{};const cs=(st.candidatures||[]).map(c=>Object.assign({votes:[]},c,
+  {created:toISO(c.created),voteEnd:toISO(c.voteEnd),decided:toISO(c.decided)}));
   return {candidatures:cs,seq:st.seq||(cs.reduce((m,c)=>Math.max(m,c.id),0)+1)};}
 async function apiGet(){const r=await fetch(API_URL,{method:"GET"});return normalize(await r.json());}
 async function apiPost(payload){const r=await fetch(API_URL,{method:"POST",body:JSON.stringify(payload)});return normalize(await r.json());}

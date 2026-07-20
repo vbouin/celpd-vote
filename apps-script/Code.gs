@@ -77,6 +77,14 @@ function doPost(e){
   } finally { lock.releaseLock(); }
 }
 
+/** Vide les deux onglets puis recrée la candidature test. À exécuter depuis l'éditeur. */
+function resetAll(){
+  var s = ss();
+  ["Candidatures","Votes"].forEach(function(n){ var sh=s.getSheetByName(n); if(sh) s.deleteSheet(sh); });
+  sheet_("Candidatures", CAND_HEADERS); sheet_("Votes", VOTE_HEADERS);
+  initSeed();
+}
+
 /** (Optionnel) UNE candidature de test — à exécuter une seule fois. */
 function initSeed(){
   addCandidature_({created:"2026-07-15",voteEnd:"2026-08-19",company:"Entreprise Test",
