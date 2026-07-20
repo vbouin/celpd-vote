@@ -77,11 +77,13 @@ function doPost(e){
   } finally { lock.releaseLock(); }
 }
 
-/** (Optionnel) Données de démo — à exécuter une seule fois. */
+/** (Optionnel) UNE candidature de test — à exécuter une seule fois. */
 function initSeed(){
-  addCandidature_({created:"2026-06-18",voteEnd:"2026-07-23",company:"Atelier Kairos",sector:"Architecture d'intérieur",
-    size:"12 salariés",tier:350,address:"Tour Oxygène, 69003 Lyon",referent:"Léa Marchand",
-    referentMail:"lea.marchand@atelierkairos.fr",sponsor:"Kardham",motivation:"Ateliers Immobilier.",
-    domains:["Immobilier","Innovation / IA"]});
-  addVote_({candidatureId:1,companyKey:"co:kardham",company:"Kardham",vote:"for"});
+  addCandidature_({created:"2026-07-15",voteEnd:"2026-08-19",company:"Entreprise Test",
+    sector:"Test — candidature de démonstration",size:"10 salariés",tier:350,
+    address:"Tour Part‑Dieu, 129 rue Servient, 69003 Lyon",referent:"Prénom Nom",
+    referentMail:"contact@entreprise-test.fr",referentPhone:"06 00 00 00 00",sponsor:"",
+    motivation:"Candidature de test pour essayer le vote.",domains:["Innovation / IA","Immobilier"]});
+  addVote_({candidatureId:1,companyKey:"co:solvay",company:"Solvay",vote:"for"});
+  addVote_({candidatureId:1,companyKey:"co:jcdecaux",company:"JCDecaux",vote:"against"});
 }

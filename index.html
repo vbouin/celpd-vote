@@ -102,6 +102,12 @@ main{padding:24px 0 60px}
 .votebar i{display:block;height:100%}
 .votebar .for{background:var(--brand)}.votebar .against{background:var(--red)}.votebar .abst{background:#bcccc8}
 .tally{display:flex;gap:16px;font-size:12.5px;color:var(--muted);font-weight:600}.tally b{color:var(--ink)}
+.voters{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.voters .vlab{font-size:11.5px;color:var(--muted);font-weight:600;align-self:center;margin-right:2px}
+.voter{font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:20px;display:inline-flex;align-items:center;gap:5px;border:1px solid transparent}
+.voter.for{background:var(--green-bg);color:var(--green);border-color:#bfe3d5}
+.voter.against{background:var(--red-bg);color:var(--red);border-color:#f2cfca}
+.voter.abstain{background:#eef1f0;color:#5d7b77;border-color:#dbe3e1}
 .foot{display:flex;gap:8px;align-items:center;padding:14px 20px;border-top:1px solid var(--line);background:#f7fbfa;flex-wrap:wrap}
 .foot .btn.sm{flex:1 1 auto}
 .myvote{font-size:12.5px;font-weight:600;padding:8px 11px;border-radius:8px;background:#e4f0ed;flex:1 1 100%}
@@ -212,46 +218,14 @@ function isClosed(c){return c.voteEnd && todayISO()>c.voteEnd;}
 /* ===== données (réinitialisées à chaque connexion — démo, en mémoire) ===== */
 function seed(){return{
   candidatures:[
-    {id:1,status:"pending",created:"2026-06-18",voteEnd:"2026-07-23",company:"Atelier Kairos",sector:"Architecture d'intérieur & agencement",
-      size:"12 salariés",tier:350,address:"Tour Oxygène, 10‑12 bd Vivier‑Merle, 69003 Lyon",referent:"Léa Marchand",
-      referentMail:"lea.marchand@atelierkairos.fr",referentPhone:"06 12 34 56 78",sponsor:"Kardham",
-      motivation:"Nous accompagnons plusieurs sièges du quartier sur l'aménagement des espaces de travail et souhaitons contribuer aux ateliers Immobilier.",
-      domains:["Immobilier","Développement durable / RSE","Innovation / IA"],
-      votes:[{by:"claire",v:"for",c:"Profil pertinent."},{by:"yann",v:"for",c:""}]},
-    {id:2,status:"pending",created:"2026-06-25",voteEnd:"2026-07-30",company:"DataPart Solutions",sector:"Éditeur logiciel / IA",
-      size:"34 salariés",tier:600,address:"Silex², 45 rue Garibaldi, 69006 Lyon",referent:"Karim Benali",
-      referentMail:"k.benali@datapart.io",referentPhone:"07 88 21 09 44",sponsor:"",
-      motivation:"Acteur IA du quartier, nous voulons animer des ateliers IA pour les PME du Club.",
-      domains:["Innovation / IA","Numérique","Développement commercial"],votes:[{by:"claire",v:"abstain",c:"Ancrage local à confirmer."}]},
-    {id:3,status:"accepted",created:"2026-05-12",decided:"2026-05-28",company:"Halles Bocuse — Comptoir",sector:"Commerce / restauration",
-      size:"9 salariés",tier:180,address:"Halles Paul Bocuse, 102 cours Lafayette, 69003 Lyon",referent:"Sophie Ravel",
-      referentMail:"sophie@comptoir-halles.fr",referentPhone:"06 45 78 12 90",sponsor:"Lyon Parc Auto",
-      motivation:"Commerce emblématique, envie de contribuer aux ateliers Culture.",
-      domains:["Culture & communication","Développement durable / RSE"],
-      votes:[{by:"claire",v:"for"},{by:"yann",v:"for"},{by:"membre",v:"for"},{by:"marlene",v:"for"}]},
-    {id:4,status:"accepted",created:"2026-03-08",decided:"2026-03-24",company:"Cabinet Verlaine RH",sector:"Conseil RH",
-      size:"18 salariés",tier:350,address:"Le Britannia, 20 bd Deruelle, 69003 Lyon",referent:"Paul Verlaine",
-      referentMail:"contact@verlaine-rh.fr",referentPhone:"06 33 55 77 11",sponsor:"EY",
-      motivation:"Envie d'animer les Matinales RH du Club.",domains:["Ressources humaines","Innovation / IA"],
-      votes:[{by:"claire",v:"for"},{by:"yann",v:"for"},{by:"membre",v:"for"},{by:"marlene",v:"for"},{by:"paul",v:"for"}]},
-    {id:5,status:"rejected",created:"2026-02-10",decided:"2026-02-27",company:"PubMax Régie",sector:"Régie publicitaire",
-      size:"6 salariés",tier:180,address:"Hors quartier — 69100 Villeurbanne",referent:"Éric Sabot",
-      referentMail:"e.sabot@pubmax.fr",referentPhone:"06 00 11 22 33",sponsor:"",
-      motivation:"Prospection commerciale auprès des adhérents.",domains:["Développement commercial"],
-      votes:[{by:"claire",v:"against",c:"Hors périmètre Part‑Dieu, démarche commerciale."},{by:"yann",v:"against"},
-             {by:"membre",v:"against"},{by:"marlene",v:"abstain"}]},
-    {id:6,status:"accepted",created:"2026-01-14",decided:"2026-01-30",company:"MobiliCité",sector:"Mobilité douce",
-      size:"22 salariés",tier:600,address:"Incity, 116 bd Vivier‑Merle, 69003 Lyon",referent:"Nadia Rekik",
-      referentMail:"nadia@mobilicite.fr",referentPhone:"06 74 85 96 07",sponsor:"Keolis Lyon",
-      motivation:"Contribuer au Plan de Mobilité Inter‑Entreprises (PMIE).",domains:["Mobilité (PMIE)","Développement durable / RSE"],
-      votes:[{by:"claire",v:"for"},{by:"yann",v:"for"},{by:"membre",v:"for"},{by:"marlene",v:"for"},{by:"paul",v:"abstain"}]},
-    {id:7,status:"rejected",created:"2025-11-19",decided:"2025-12-05",company:"CloudNine SSII",sector:"Prestation IT",
-      size:"120 salariés",tier:850,address:"69007 Lyon (Gerland)",referent:"Marc Aubert",
-      referentMail:"m.aubert@cloudnine.fr",referentPhone:"06 55 44 33 22",sponsor:"",
-      motivation:"Développer notre visibilité.",domains:["Numérique"],
-      votes:[{by:"claire",v:"against"},{by:"yann",v:"abstain"},{by:"membre",v:"against"},{by:"marlene",v:"against"}]},
+    {id:1,status:"pending",created:"2026-07-15",voteEnd:"2026-08-19",company:"Entreprise Test",sector:"Test — candidature de démonstration",
+      size:"10 salariés",tier:350,address:"Tour Part‑Dieu, 129 rue Servient, 69003 Lyon",referent:"Prénom Nom",
+      referentMail:"contact@entreprise-test.fr",referentPhone:"06 00 00 00 00",sponsor:"",
+      motivation:"Candidature de test pour essayer le vote : cliquez Pour / Contre / Abstention. Une entreprise = un vote.",
+      domains:["Innovation / IA","Immobilier"],
+      votes:[{by:"co:solvay",company:"Solvay",v:"for",c:""},{by:"co:jcdecaux",company:"JCDecaux",v:"against",c:""}]},
   ],
-  seq:8
+  seq:2
 };}
 /* ============================================================
    SAUVEGARDE DES VOTES — deux modes automatiques :
@@ -355,6 +329,7 @@ function candCard(c){
     ${voteBar(t,total)}
     <div class="tally"><span>Pour <b>${t.for}</b></span><span>Contre <b>${t.against}</b></span>
       <span>Abst. <b>${t.abstain}</b></span><span style="margin-left:auto">${c.votes.length}/${CA_VOTERS}</span></div>
+    ${votersList(c)}
   </div>
   <div class="foot">${
     closed?`<span class="myvote">🔒 Votes clos le ${fmt(c.voteEnd)} — en attente de décision du CA.${mine?' Votre vote : '+voteLabel(mine.v):''}</span>`:
@@ -373,11 +348,20 @@ function histCard(c){
     ${voteBar(t,total)}
     <div class="tally"><span>Pour <b>${t.for}</b></span><span>Contre <b>${t.against}</b></span>
       <span>Abst. <b>${t.abstain}</b></span><span class="decided">Décidée le ${fmt(c.decided)}</span></div>
+    ${votersList(c)}
   </div></div>`;
 }
 function voteBar(t,total){return`<div class="votebar"><i class="for" style="width:${t.for/total*100}%"></i>
   <i class="against" style="width:${t.against/total*100}%"></i><i class="abst" style="width:${t.abstain/total*100}%"></i></div>`;}
 function voteLabel(v){return{for:"✅ Pour",against:"❌ Contre",abstain:"⚪ Abstention"}[v];}
+function voteShort(v){return{for:"Pour",against:"Contre",abstain:"Abst."}[v];}
+function votersList(c){
+  if(!c.votes.length)return`<div class="voters"><span class="vlab">Aucun vote pour l'instant.</span></div>`;
+  const order={for:0,against:1,abstain:2};
+  const items=c.votes.slice().sort((a,b)=>order[a.v]-order[b.v]).map(v=>
+    `<span class="voter ${v.v}">${esc(v.company||v.by)} · ${voteShort(v.v)}</span>`).join("");
+  return`<div class="voters"><span class="vlab">Qui a voté :</span>${items}</div>`;
+}
 
 /* un seul vote par candidature (invité) */
 async function vote(id,v){
