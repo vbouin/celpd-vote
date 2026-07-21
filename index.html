@@ -92,6 +92,9 @@ main{padding:24px 0 60px}
 .cand .h{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
 .cand .co{font-size:17px;font-weight:700}
 .cand .sector{color:var(--muted);font-size:13px;margin-top:2px}
+.cohead{display:flex;gap:11px;align-items:flex-start}
+.clogo{width:44px;height:44px;border-radius:10px;object-fit:contain;background:#fff;border:1px solid var(--line);padding:4px;flex:0 0 auto}
+.clogo.sm{width:36px;height:36px;border-radius:9px}
 .fiche{font-size:13px;color:#39544f;margin:12px 0 0;background:#f2f8f6;border-left:3px solid var(--brand-2);padding:9px 12px;border-radius:8px}
 .weblink{display:inline-flex;align-items:center;gap:5px;margin-top:10px;font-size:13px;font-weight:600;color:var(--accent);text-decoration:none}
 .weblink:hover{text-decoration:underline}
@@ -217,12 +220,16 @@ const TIERS=[{v:1600,label:"1 600 € — Grand compte"},{v:850,label:"850 € �
 function tierShort(v){if(v==null||v<0)return'À confirmer';return v?v.toLocaleString('fr-FR')+' €':'Partenaire';}
 /* Fiche + site web (fallback par nom d'entreprise, utile en mode partagé si le Sheet ne stocke pas ces champs) */
 const INFO={
-  "co:jca":{web:"https://www.jca-groupe.fr",desc:"Jeunes Chercheurs Associés — 1ʳᵉ coopérative scientifique française (SCIC) : missions de sciences appliquées (santé, territoires, industrie, innovation) auprès d'organisations publiques et privées, en valorisant les compétences de jeunes docteurs."},
-  "co:la famille finest lunch":{web:"https://www.lf.fr",desc:"Restaurant & traiteur du quartier : sandwichs préparés minute, bowls et salades — sur place, à emporter, click & collect ou livrés au bureau avant 12h30."},
-  "co:accor":{web:"https://group.accor.com",desc:"Groupe mondial leader de l'hospitalité (hôtellerie), présent sur le secteur Lyon Part‑Dieu."}
+  "co:jca":{web:"https://www.jca-groupe.fr",logo:"assets/logo-jca.png",
+    desc:"Jeunes Chercheurs Associés — 1ʳᵉ coopérative scientifique française (SCIC, SIREN 849 895 032). Conseil, expertise et R&D en sciences appliquées (santé & sciences du vivant, action publique & territoires, industrie & technologies), en valorisant les compétences de jeunes docteurs. Siège à Clermont‑Ferrand, présence en Auvergne‑Rhône‑Alpes."},
+  "co:la famille finest lunch":{web:"https://www.lf.fr",logo:"assets/logo-lafamille.png",
+    desc:"Restaurant & traiteur de déjeuner (restauration rapide, SIREN 929 047 512). Sandwichs préparés minute, bowls et salades — sur place, à emporter, click & collect ou livrés au bureau avant 12h30. Établissement Part‑Dieu : 101 bd Marius Vivier‑Merle, 69003 Lyon."},
+  "co:accor":{web:"https://group.accor.com",logo:"assets/logo-accor.png",
+    desc:"Accor SA (SIREN 602 036 444) — groupe mondial leader de l'hospitalité : ~45 marques hôtelières (ibis, Mercure, Novotel, Sofitel…), plus de 5 600 hôtels dans ~110 pays. Plusieurs établissements sur le secteur Lyon Part‑Dieu."}
 };
 function candWeb(c){return c.website||(INFO[ckey(c.company)]||{}).web||"";}
 function candDesc(c){return c.desc||(INFO[ckey(c.company)]||{}).desc||"";}
+function candLogo(c){return c.logo||(INFO[ckey(c.company)]||{}).logo||"";}
 const CA_VOTERS=7, QUORUM=4;
 const ACCESS_CODE="CELPD26#";
 let SESSION=null;
@@ -240,22 +247,16 @@ function seed(){return{
       sector:"Coopérative scientifique — conseil & R&D (sciences appliquées)",size:"—",tier:-1,
       address:"Lyon — Auvergne‑Rhône‑Alpes (adresse lyonnaise à préciser)",
       referent:"À préciser",referentMail:"contact@clubpartdieu.fr",referentPhone:"—",sponsor:"",
-      website:"https://www.jca-groupe.fr",
-      desc:"Jeunes Chercheurs Associés — 1ʳᵉ coopérative scientifique française (SCIC) : missions de sciences appliquées (santé, territoires, industrie, innovation) auprès d'organisations publiques et privées, en valorisant les compétences de jeunes docteurs.",
       motivation:"Candidature à l'adhésion au CELPD. Coopérative implantée en Auvergne‑Rhône‑Alpes.",
       domains:["Innovation / IA"],votes:[]},
     {id:2,status:"pending",created:"2026-07-20",voteEnd:"2026-08-24",company:"La Famille Finest Lunch",
       sector:"Restauration / traiteur — déjeuner",size:"—",tier:-1,address:"Buro Club Lyon Part‑Dieu — 129 rue Servient, 69003 Lyon (Tour Part‑Dieu, 21e étage)",
       referent:"À préciser",referentMail:"contact@clubpartdieu.fr",referentPhone:"—",sponsor:"",
-      website:"https://www.lf.fr",
-      desc:"Restaurant & traiteur du quartier : sandwichs préparés minute, bowls et salades — sur place, à emporter, click & collect ou livrés au bureau avant 12h30.",
       motivation:"Entreprise du quartier (Buro Club Lyon Part‑Dieu) candidate à l'adhésion au CELPD.",
       domains:[],votes:[]},
     {id:3,status:"pending",created:"2026-07-20",voteEnd:"2026-08-24",company:"Accor",
       sector:"Hôtellerie / hospitalité",size:"—",tier:-1,address:"Buro Club Lyon Part‑Dieu — 129 rue Servient, 69003 Lyon (Tour Part‑Dieu, 21e étage)",
       referent:"À préciser",referentMail:"contact@clubpartdieu.fr",referentPhone:"—",sponsor:"",
-      website:"https://group.accor.com",
-      desc:"Groupe mondial leader de l'hospitalité (hôtellerie), présent sur le secteur Lyon Part‑Dieu.",
       motivation:"Entreprise domiciliée au Buro Club Lyon Part‑Dieu, candidate à l'adhésion au CELPD.",
       domains:[],votes:[]},
   ],
@@ -362,8 +363,11 @@ function stat(n,l){return`<div class="card stat"><div class="n">${n}</div><div c
 function candCard(c){
   const t=tally(c),total=t.for+t.against+t.abstain||1,mine=myVote(c),closed=isClosed(c);
   return `<div class="card cand"><div class="body">
-    <div class="h"><div><div class="co">${esc(c.company)} <span class="chip">${tierShort(c.tier)}</span></div>
-      <div class="sector">${esc(c.sector)} · ${esc(c.size)}</div></div><span class="badge pending">● En attente</span></div>
+    <div class="h"><div class="cohead">
+      ${candLogo(c)?`<img class="clogo" src="${esc(candLogo(c))}" alt="Logo ${esc(c.company)}" onerror="this.style.display='none'">`:""}
+      <div><div class="co">${esc(c.company)} <span class="chip">${tierShort(c.tier)}</span></div>
+      <div class="sector">${esc(c.sector)} · ${esc(c.size)}</div></div>
+    </div><span class="badge pending">● En attente</span></div>
     <dl><dt>Référent</dt><dd>${esc(c.referent)} — <a href="mailto:${esc(c.referentMail)}">${esc(c.referentMail)}</a></dd>
       <dt>Adresse</dt><dd>${esc(c.address)}</dd>${c.sponsor?`<dt>Parrain·e</dt><dd>${esc(c.sponsor)}</dd>`:""}
       <dt>Déposée le</dt><dd>${fmt(c.created)}</dd></dl>
@@ -389,8 +393,11 @@ function histCard(c){
   const t=tally(c),total=t.for+t.against+t.abstain||1;
   const badge=c.status==="accepted"?`<span class="badge acc">✓ Acceptée</span>`:`<span class="badge rej">✕ Refusée</span>`;
   return `<div class="card cand"><div class="body">
-    <div class="h"><div><div class="co" style="font-size:15px">${esc(c.company)} <span class="chip">${tierShort(c.tier)}</span></div>
-      <div class="sector">${esc(c.sector)}</div></div>${badge}</div>
+    <div class="h"><div class="cohead">
+      ${candLogo(c)?`<img class="clogo sm" src="${esc(candLogo(c))}" alt="" onerror="this.style.display='none'">`:""}
+      <div><div class="co" style="font-size:15px">${esc(c.company)} <span class="chip">${tierShort(c.tier)}</span></div>
+      <div class="sector">${esc(c.sector)}</div></div>
+    </div>${badge}</div>
     ${voteBar(t,total)}
     <div class="tally"><span>Pour <b>${t.for}</b></span><span>Contre <b>${t.against}</b></span>
       <span>Abst. <b>${t.abstain}</b></span><span class="decided">Décidée le ${fmt(c.decided)}</span></div>
