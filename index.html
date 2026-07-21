@@ -24,8 +24,11 @@ button{font-family:inherit;cursor:pointer}
 .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
 
 /* gate */
-#gate{min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:20px;
+#gate{min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:20px;position:relative;overflow:hidden;
   background:linear-gradient(160deg,#0e4f4a,#0f766e 60%,#127c72)}
+.gate-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.gate-overlay{position:absolute;inset:0;z-index:1;background:linear-gradient(160deg,rgba(14,79,74,.86),rgba(15,118,110,.72))}
+.gate-card{position:relative;z-index:2}
 .gate-card{background:#fff;border-radius:18px;box-shadow:var(--shadow);width:min(400px,94vw);padding:28px 26px;text-align:center}
 .gate-card .logo{width:150px;margin:0 auto 12px;display:block}
 .gate-card h1{font-size:19px}.gate-card .sub{color:var(--muted);font-size:13px;margin:4px 0 20px}
@@ -160,6 +163,9 @@ footer.legal b{color:var(--ink)}
 
 <!-- ====== GATE ====== -->
 <div id="gate">
+  <video class="gate-video" autoplay muted loop playsinline preload="auto"
+    onerror="this.style.display='none'"><source src="assets/celpd-login.mp4" type="video/mp4"></video>
+  <div class="gate-overlay"></div>
   <div class="gate-card">
     <div class="logo" id="gate-logo"></div>
     <h1>Espace de vote des candidatures</h1>
@@ -185,6 +191,7 @@ footer.legal b{color:var(--ink)}
     <div class="brand">CELPD<small>ESPACE DE VOTE</small></div>
     <div class="right">
       <span class="guest"><span class="dot"></span><span>Compte invité</span></span>
+      <button onclick="reminder()" title="Aide — comment voter">? Aide</button>
       <button onclick="openNew()">+ Candidature</button>
       <button onclick="exportCSV()">⇩ Export</button>
     </div>
@@ -204,7 +211,7 @@ const DOMAINS=["Culture & communication","Immobilier","Innovation / IA","Mobilit
 const TIERS=[{v:1600,label:"1 600 € — Grand compte"},{v:850,label:"850 € — Grande entreprise"},
   {v:600,label:"600 € — Entreprise intermédiaire"},{v:350,label:"350 € — Petite structure"},
   {v:180,label:"180 € — TPE / indépendant"},{v:0,label:"Partenaire (0 €)"}];
-function tierShort(v){return v?v.toLocaleString('fr-FR')+' €':'Partenaire';}
+function tierShort(v){if(v==null||v<0)return'À confirmer';return v?v.toLocaleString('fr-FR')+' €':'Partenaire';}
 const CA_VOTERS=7, QUORUM=4;
 const ACCESS_CODE="CELPD26#";
 let SESSION=null;
@@ -218,14 +225,20 @@ function isClosed(c){return c.voteEnd && todayISO()>c.voteEnd;}
 /* ===== données (réinitialisées à chaque connexion — démo, en mémoire) ===== */
 function seed(){return{
   candidatures:[
-    {id:1,status:"pending",created:"2026-07-15",voteEnd:"2026-08-19",company:"Entreprise Test",sector:"Test — candidature de démonstration",
-      size:"10 salariés",tier:350,address:"Tour Part‑Dieu, 129 rue Servient, 69003 Lyon",referent:"Prénom Nom",
-      referentMail:"contact@entreprise-test.fr",referentPhone:"06 00 00 00 00",sponsor:"",
-      motivation:"Candidature de test pour essayer le vote : cliquez Pour / Contre / Abstention. Une entreprise = un vote.",
-      domains:["Innovation / IA","Immobilier"],
-      votes:[{by:"co:solvay",company:"Solvay",v:"for",c:""},{by:"co:jcdecaux",company:"JCDecaux",v:"against",c:""}]},
+    {id:1,status:"pending",created:"2026-07-20",voteEnd:"2026-08-24",company:"Association MC2A — Promeom",
+      sector:"Santé au travail — SPSTI (prévention & santé au travail interentreprises)",
+      size:"≈ 600 salariés (groupe)",tier:300,address:"20 boulevard Eugène Deruelle, 69003 Lyon (Le Britannia)",
+      referent:"Marlène Piriou (animatrice CELPD)",referentMail:"contact@clubpartdieu.fr",referentPhone:"—",sponsor:"",
+      motivation:"Issue de la fusion Agemetra / AST Grand Lyon au 01/01/2025, Promeom est le 1ᵉʳ opérateur de santé au travail en Auvergne‑Rhône‑Alpes, avec plusieurs centres dans le 3ᵉ arrondissement. Cotisation annoncée : 300 € HT (hors grille standard — palier le plus proche : 350 €).",
+      domains:["Ressources humaines","Développement durable / RSE"],votes:[]},
+    {id:2,status:"pending",created:"2026-07-20",voteEnd:"2026-08-24",company:"Les Ateliers de l'Audace",
+      sector:"Chantier d'insertion — réparation/vente de vélos reconditionnés, mobilité douce en entreprise",
+      size:"35 salariés",tier:null,address:"141 rue Pierre Corneille, 69003 Lyon",
+      referent:"Bénédicte Moreau",referentMail:"bmoreau@ateliersdelaudace.fr",referentPhone:"—",sponsor:"",
+      motivation:"Identifier des employeurs pour des salariés en insertion et promouvoir la mobilité douce (vélo) auprès des adhérents du CELPD. Palier de cotisation à confirmer avec l'animatrice avant décision.",
+      domains:["Mobilité (PMIE)","Ressources humaines","Développement durable / RSE"],votes:[]},
   ],
-  seq:2
+  seq:3
 };}
 /* ============================================================
    SAUVEGARDE DES VOTES — deux modes automatiques :
@@ -276,15 +289,17 @@ document.addEventListener("keydown",e=>{if(e.key==="Enter"&&!document.getElement
 (function(){const m=(location.hash||"").match(/code=([^&]+)/);if(m){document.getElementById("gt-code").value=decodeURIComponent(m[1]);}})();
 
 function reminder(){
-  modal("Bienvenue 👋 — "+SESSION.name,
-    `<p style="margin-top:0">Vous votez au nom de <b>${esc(SESSION.name)}</b>.</p>
-     <ul style="margin:0;padding-left:18px;color:#39544f;font-size:14px">
-       <li><b>Une entreprise = un vote</b> par candidature.</li>
-       <li>Le vote est ouvert jusqu'à sa <b>date de fin</b> (5 semaines max après le dépôt).</li>
-       <li>Vos votes sont <b>enregistrés dans ce navigateur</b> et alimentent l'historique et les graphiques.</li>
-       <li><b>⇩ Export</b> pour récupérer l'historique en CSV.</li>
-     </ul>`,
-    `<button class="btn" onclick="closeModal()">J'ai compris</button>`);
+  modal("Comment voter — "+esc(SESSION.name),
+    `<p style="margin-top:0">Bienvenue&nbsp;! Vous votez au nom de <b>${esc(SESSION.name)}</b>. Voici comment ça marche&nbsp;:</p>
+     <ol style="margin:0;padding-left:20px;color:#39544f;font-size:14px;display:flex;flex-direction:column;gap:7px">
+       <li>Dans <b>« À voter »</b>, lisez chaque candidature (secteur, adresse, motivation).</li>
+       <li>Cliquez <b>Pour</b>, <b>Contre</b> ou <b>Abstention</b>. <b>Une entreprise = un seul vote</b> par candidature (définitif).</li>
+       <li>Chaque vote est <b>nominatif</b> : la ligne « Qui a voté » montre qui a voté quoi.</li>
+       <li>Le vote reste ouvert jusqu'à sa <b>date de fin</b> (5 semaines max) ; ensuite il est clos.</li>
+       <li><b>+ Candidature</b> pour proposer une nouvelle entreprise · <b>⇩ Export</b> pour un CSV des résultats.</li>
+     </ol>
+     <p style="font-size:12.5px;color:var(--muted);margin:14px 0 0">Besoin de revoir ceci&nbsp;? Bouton <b>? Aide</b> en haut à droite.</p>`,
+    `<button class="btn" onclick="closeModal()">C'est parti</button>`);
 }
 
 /* ===== helpers ===== */

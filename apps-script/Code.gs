@@ -85,13 +85,18 @@ function resetAll(){
   initSeed();
 }
 
-/** (Optionnel) UNE candidature de test — à exécuter une seule fois. */
+/** Les 2 candidatures réelles à soumettre au vote — exécuter une seule fois (ou via resetAll). */
 function initSeed(){
-  addCandidature_({created:"2026-07-15",voteEnd:"2026-08-19",company:"Entreprise Test",
-    sector:"Test — candidature de démonstration",size:"10 salariés",tier:350,
-    address:"Tour Part‑Dieu, 129 rue Servient, 69003 Lyon",referent:"Prénom Nom",
-    referentMail:"contact@entreprise-test.fr",referentPhone:"06 00 00 00 00",sponsor:"",
-    motivation:"Candidature de test pour essayer le vote.",domains:["Innovation / IA","Immobilier"]});
-  addVote_({candidatureId:1,companyKey:"co:solvay",company:"Solvay",vote:"for"});
-  addVote_({candidatureId:1,companyKey:"co:jcdecaux",company:"JCDecaux",vote:"against"});
+  addCandidature_({created:"2026-07-20",voteEnd:"2026-08-24",company:"Association MC2A — Promeom",
+    sector:"Santé au travail — SPSTI (prévention & santé au travail interentreprises)",size:"≈ 600 salariés (groupe)",
+    tier:300,address:"20 boulevard Eugène Deruelle, 69003 Lyon (Le Britannia)",
+    referent:"Marlène Piriou (animatrice CELPD)",referentMail:"contact@clubpartdieu.fr",referentPhone:"—",sponsor:"",
+    motivation:"Issue de la fusion Agemetra / AST Grand Lyon au 01/01/2025, Promeom est le 1er opérateur de santé au travail en Auvergne-Rhône-Alpes, avec plusieurs centres dans le 3e arrondissement. Cotisation annoncée : 300 € HT (hors grille standard — palier le plus proche : 350 €).",
+    domains:["Ressources humaines","Développement durable / RSE"]});
+  addCandidature_({created:"2026-07-20",voteEnd:"2026-08-24",company:"Les Ateliers de l'Audace",
+    sector:"Chantier d'insertion — réparation/vente de vélos reconditionnés, mobilité douce en entreprise",size:"35 salariés",
+    tier:-1,address:"141 rue Pierre Corneille, 69003 Lyon",
+    referent:"Bénédicte Moreau",referentMail:"bmoreau@ateliersdelaudace.fr",referentPhone:"—",sponsor:"",
+    motivation:"Identifier des employeurs pour des salariés en insertion et promouvoir la mobilité douce (vélo) auprès des adhérents du CELPD. Palier de cotisation à confirmer avec l'animatrice avant décision.",
+    domains:["Mobilité (PMIE)","Ressources humaines","Développement durable / RSE"]});
 }

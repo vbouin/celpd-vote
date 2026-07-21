@@ -48,6 +48,15 @@ L'URL publique servira `index.html`.
 - Le Web App Apps Script est en accès « Tout le monde » : n'y stocke **pas** de données sensibles.
   Pour durcir : lien magique / vérification d'appartenance côté serveur.
 
+## Vidéo de fond sur la page de connexion
+Dépose une vidéo **`assets/celpd-login.mp4`** (muette, quelques secondes, bouclée) : elle s'affiche
+en fond de l'écran de connexion, derrière un voile teal qui garde le texte lisible.
+Sans fichier, l'écran garde son dégradé (aucune erreur). Formats conseillés : MP4 H.264, < 8 Mo.
+
+## E‑mail aux adhérents
+Un modèle prêt à envoyer est fourni dans [`email-adherents.md`](email-adherents.md)
+(invitation à voter + mode d'emploi + lien + code).
+
 ## Remplacer le logo
 Dépose ton image dans `assets/` et, dans `index.template.html`, adapte la constante `LOGO`
 (actuellement `<img src="assets/celpd-logo.png">`), puis `python3 build.py`.
