@@ -217,6 +217,7 @@ const TIERS=[{v:1600,label:"1 600 € — Grand compte"},{v:850,label:"850 € �
 function tierShort(v){if(v==null||v<0)return'À confirmer';return v?v.toLocaleString('fr-FR')+' €':'Partenaire';}
 /* Fiche + site web (fallback par nom d'entreprise, utile en mode partagé si le Sheet ne stocke pas ces champs) */
 const INFO={
+  "co:jca":{web:"https://www.jca-groupe.fr",desc:"Jeunes Chercheurs Associés — 1ʳᵉ coopérative scientifique française (SCIC) : missions de sciences appliquées (santé, territoires, industrie, innovation) auprès d'organisations publiques et privées, en valorisant les compétences de jeunes docteurs."},
   "co:la famille finest lunch":{web:"https://www.lf.fr",desc:"Restaurant & traiteur du quartier : sandwichs préparés minute, bowls et salades — sur place, à emporter, click & collect ou livrés au bureau avant 12h30."},
   "co:accor":{web:"https://group.accor.com",desc:"Groupe mondial leader de l'hospitalité (hôtellerie), présent sur le secteur Lyon Part‑Dieu."}
 };
@@ -236,11 +237,13 @@ function isClosed(c){return c.voteEnd && todayISO()>c.voteEnd;}
 function seed(){return{
   candidatures:[
     {id:1,status:"pending",created:"2026-07-20",voteEnd:"2026-08-24",company:"JCA",
-      sector:"À préciser",size:"—",tier:-1,address:"Buro Club Lyon Part‑Dieu — 129 rue Servient, 69003 Lyon (Tour Part‑Dieu, 21e étage)",
+      sector:"Coopérative scientifique — conseil & R&D (sciences appliquées)",size:"—",tier:-1,
+      address:"Lyon — Auvergne‑Rhône‑Alpes (adresse lyonnaise à préciser)",
       referent:"À préciser",referentMail:"contact@clubpartdieu.fr",referentPhone:"—",sponsor:"",
-      website:"",desc:"",
-      motivation:"Entreprise domiciliée au Buro Club Lyon Part‑Dieu, candidate à l'adhésion au Club. Détails à compléter avec l'animatrice.",
-      domains:[],votes:[]},
+      website:"https://www.jca-groupe.fr",
+      desc:"Jeunes Chercheurs Associés — 1ʳᵉ coopérative scientifique française (SCIC) : missions de sciences appliquées (santé, territoires, industrie, innovation) auprès d'organisations publiques et privées, en valorisant les compétences de jeunes docteurs.",
+      motivation:"Candidature à l'adhésion au CELPD. Coopérative implantée en Auvergne‑Rhône‑Alpes.",
+      domains:["Innovation / IA"],votes:[]},
     {id:2,status:"pending",created:"2026-07-20",voteEnd:"2026-08-24",company:"La Famille Finest Lunch",
       sector:"Restauration / traiteur — déjeuner",size:"—",tier:-1,address:"Buro Club Lyon Part‑Dieu — 129 rue Servient, 69003 Lyon (Tour Part‑Dieu, 21e étage)",
       referent:"À préciser",referentMail:"contact@clubpartdieu.fr",referentPhone:"—",sponsor:"",

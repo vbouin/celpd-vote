@@ -88,9 +88,11 @@ function resetAll(){
 /** Les 3 candidatures (entreprises du Buro Club Lyon Part-Dieu) — exécuter une fois (ou via resetAll). */
 function initSeed(){
   var ADDR="Buro Club Lyon Part-Dieu — 129 rue Servient, 69003 Lyon (Tour Part-Dieu, 21e étage)";
-  addCandidature_({created:"2026-07-20",voteEnd:"2026-08-24",company:"JCA",sector:"À préciser",size:"—",
-    tier:-1,address:ADDR,referent:"À préciser",referentMail:"contact@clubpartdieu.fr",referentPhone:"—",sponsor:"",
-    motivation:"Entreprise domiciliée au Buro Club Lyon Part-Dieu, candidate à l'adhésion au Club. Détails à compléter avec l'animatrice.",domains:[]});
+  addCandidature_({created:"2026-07-20",voteEnd:"2026-08-24",company:"JCA",
+    sector:"Coopérative scientifique — conseil & R&D (sciences appliquées)",size:"—",
+    tier:-1,address:"Lyon — Auvergne-Rhône-Alpes (adresse lyonnaise à préciser)",
+    referent:"À préciser",referentMail:"contact@clubpartdieu.fr",referentPhone:"—",sponsor:"",
+    motivation:"Candidature à l'adhésion au CELPD. Coopérative implantée en Auvergne-Rhône-Alpes.",domains:["Innovation / IA"]});
   addCandidature_({created:"2026-07-20",voteEnd:"2026-08-24",company:"La Famille Finest Lunch",
     sector:"Restauration / traiteur — déjeuner",size:"—",tier:-1,address:ADDR,
     referent:"À préciser",referentMail:"contact@clubpartdieu.fr",referentPhone:"—",sponsor:"",
