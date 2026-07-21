@@ -92,6 +92,9 @@ main{padding:24px 0 60px}
 .cand .h{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
 .cand .co{font-size:17px;font-weight:700}
 .cand .sector{color:var(--muted);font-size:13px;margin-top:2px}
+.fiche{font-size:13px;color:#39544f;margin:12px 0 0;background:#f2f8f6;border-left:3px solid var(--brand-2);padding:9px 12px;border-radius:8px}
+.weblink{display:inline-flex;align-items:center;gap:5px;margin-top:10px;font-size:13px;font-weight:600;color:var(--accent);text-decoration:none}
+.weblink:hover{text-decoration:underline}
 .cand dl{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:12px 0 0;font-size:13px}
 .cand dt{color:var(--muted);font-weight:600}.cand dd{margin:0}
 .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
@@ -212,6 +215,13 @@ const TIERS=[{v:1600,label:"1 600 € — Grand compte"},{v:850,label:"850 € �
   {v:600,label:"600 € — Entreprise intermédiaire"},{v:350,label:"350 € — Petite structure"},
   {v:180,label:"180 € — TPE / indépendant"},{v:0,label:"Partenaire (0 €)"}];
 function tierShort(v){if(v==null||v<0)return'À confirmer';return v?v.toLocaleString('fr-FR')+' €':'Partenaire';}
+/* Fiche + site web (fallback par nom d'entreprise, utile en mode partagé si le Sheet ne stocke pas ces champs) */
+const INFO={
+  "co:la famille finest lunch":{web:"https://www.lf.fr",desc:"Restaurant & traiteur du quartier : sandwichs préparés minute, bowls et salades — sur place, à emporter, click & collect ou livrés au bureau avant 12h30."},
+  "co:accor":{web:"https://group.accor.com",desc:"Groupe mondial leader de l'hospitalité (hôtellerie), présent sur le secteur Lyon Part‑Dieu."}
+};
+function candWeb(c){return c.website||(INFO[ckey(c.company)]||{}).web||"";}
+function candDesc(c){return c.desc||(INFO[ckey(c.company)]||{}).desc||"";}
 const CA_VOTERS=7, QUORUM=4;
 const ACCESS_CODE="CELPD26#";
 let SESSION=null;
@@ -225,20 +235,28 @@ function isClosed(c){return c.voteEnd && todayISO()>c.voteEnd;}
 /* ===== données (réinitialisées à chaque connexion — démo, en mémoire) ===== */
 function seed(){return{
   candidatures:[
-    {id:1,status:"pending",created:"2026-07-20",voteEnd:"2026-08-24",company:"Association MC2A — Promeom",
-      sector:"Santé au travail — SPSTI (prévention & santé au travail interentreprises)",
-      size:"≈ 600 salariés (groupe)",tier:300,address:"20 boulevard Eugène Deruelle, 69003 Lyon (Le Britannia)",
-      referent:"Marlène Piriou (animatrice CELPD)",referentMail:"contact@clubpartdieu.fr",referentPhone:"—",sponsor:"",
-      motivation:"Issue de la fusion Agemetra / AST Grand Lyon au 01/01/2025, Promeom est le 1ᵉʳ opérateur de santé au travail en Auvergne‑Rhône‑Alpes, avec plusieurs centres dans le 3ᵉ arrondissement. Cotisation annoncée : 300 € HT (hors grille standard — palier le plus proche : 350 €).",
-      domains:["Ressources humaines","Développement durable / RSE"],votes:[]},
-    {id:2,status:"pending",created:"2026-07-20",voteEnd:"2026-08-24",company:"Les Ateliers de l'Audace",
-      sector:"Chantier d'insertion — réparation/vente de vélos reconditionnés, mobilité douce en entreprise",
-      size:"35 salariés",tier:null,address:"141 rue Pierre Corneille, 69003 Lyon",
-      referent:"Bénédicte Moreau",referentMail:"bmoreau@ateliersdelaudace.fr",referentPhone:"—",sponsor:"",
-      motivation:"Identifier des employeurs pour des salariés en insertion et promouvoir la mobilité douce (vélo) auprès des adhérents du CELPD. Palier de cotisation à confirmer avec l'animatrice avant décision.",
-      domains:["Mobilité (PMIE)","Ressources humaines","Développement durable / RSE"],votes:[]},
+    {id:1,status:"pending",created:"2026-07-20",voteEnd:"2026-08-24",company:"JCA",
+      sector:"À préciser",size:"—",tier:-1,address:"Buro Club Lyon Part‑Dieu — 129 rue Servient, 69003 Lyon (Tour Part‑Dieu, 21e étage)",
+      referent:"À préciser",referentMail:"contact@clubpartdieu.fr",referentPhone:"—",sponsor:"",
+      website:"",desc:"",
+      motivation:"Entreprise domiciliée au Buro Club Lyon Part‑Dieu, candidate à l'adhésion au Club. Détails à compléter avec l'animatrice.",
+      domains:[],votes:[]},
+    {id:2,status:"pending",created:"2026-07-20",voteEnd:"2026-08-24",company:"La Famille Finest Lunch",
+      sector:"Restauration / traiteur — déjeuner",size:"—",tier:-1,address:"Buro Club Lyon Part‑Dieu — 129 rue Servient, 69003 Lyon (Tour Part‑Dieu, 21e étage)",
+      referent:"À préciser",referentMail:"contact@clubpartdieu.fr",referentPhone:"—",sponsor:"",
+      website:"https://www.lf.fr",
+      desc:"Restaurant & traiteur du quartier : sandwichs préparés minute, bowls et salades — sur place, à emporter, click & collect ou livrés au bureau avant 12h30.",
+      motivation:"Entreprise du quartier (Buro Club Lyon Part‑Dieu) candidate à l'adhésion au CELPD.",
+      domains:[],votes:[]},
+    {id:3,status:"pending",created:"2026-07-20",voteEnd:"2026-08-24",company:"Accor",
+      sector:"Hôtellerie / hospitalité",size:"—",tier:-1,address:"Buro Club Lyon Part‑Dieu — 129 rue Servient, 69003 Lyon (Tour Part‑Dieu, 21e étage)",
+      referent:"À préciser",referentMail:"contact@clubpartdieu.fr",referentPhone:"—",sponsor:"",
+      website:"https://group.accor.com",
+      desc:"Groupe mondial leader de l'hospitalité (hôtellerie), présent sur le secteur Lyon Part‑Dieu.",
+      motivation:"Entreprise domiciliée au Buro Club Lyon Part‑Dieu, candidate à l'adhésion au CELPD.",
+      domains:[],votes:[]},
   ],
-  seq:3
+  seq:4
 };}
 /* ============================================================
    SAUVEGARDE DES VOTES — deux modes automatiques :
@@ -348,6 +366,8 @@ function candCard(c){
       <dt>Déposée le</dt><dd>${fmt(c.created)}</dd></dl>
     <div class="tags">${c.domains.map(d=>`<span class="tag">${esc(d)}</span>`).join("")}</div>
     <p style="font-size:13px;color:#39544f;margin:12px 0 0"><b>Motivation.</b> ${esc(c.motivation)}</p>
+    ${candDesc(c)?`<p class="fiche">${esc(candDesc(c))}</p>`:""}
+    ${candWeb(c)?`<a class="weblink" href="${esc(candWeb(c))}" target="_blank" rel="noopener">🔗 Voir leur site ↗</a>`:""}
     ${c.voteEnd?`<div class="deadline ${closed?'closed':''}">${closed?'🔒 Votes clos le '+fmt(c.voteEnd):"🗓️ Votes ouverts jusqu'au "+fmt(c.voteEnd)}</div>`:""}
     ${voteBar(t,total)}
     <div class="tally"><span>Pour <b>${t.for}</b></span><span>Contre <b>${t.against}</b></span>
@@ -454,6 +474,8 @@ function openNew(){
       <div class="field"><label>E‑mail référent <span class="req">*</span></label><input name="referentMail" type="email" required></div>
       <div class="field full"><label>Thématiques d'intérêt</label>
         <div class="chk">${DOMAINS.map(d=>`<label><input type="checkbox" name="dom" value="${esc(d)}">${esc(d)}</label>`).join("")}</div></div>
+      <div class="field full"><label>Site web (facultatif)</label><input name="website" type="url" placeholder="https://…"></div>
+      <div class="field full"><label>Courte présentation (facultatif)</label><textarea name="desc" rows="2" placeholder="1–2 lignes qui présentent l'entreprise"></textarea></div>
       <div class="field full"><label>Motivation <span class="req">*</span></label><textarea name="motivation" rows="3" required></textarea></div>
     </div>
     <div class="note full" style="margin-top:4px"><b>RGPD.</b> Coordonnées traitées par le CELPD aux seules fins d'instruction de la candidature ;
@@ -472,7 +494,7 @@ function submitCand(e){
   const cand={id:DB.seq++,status:"pending",created,voteEnd,
     company:g("company"),sector:g("sector"),size:g("size")||"—",tier:parseInt(f.elements.tier.value,10),
     address:g("address"),referent:g("referent"),referentMail:g("referentMail"),referentPhone:"—",
-    sponsor:g("sponsor"),motivation:g("motivation"),domains:doms,votes:[]};
+    sponsor:g("sponsor"),motivation:g("motivation"),website:g("website"),desc:g("desc"),domains:doms,votes:[]};
   DB.candidatures.unshift(cand);closeModal();render(); // optimiste
   if(API_URL){apiPost({action:"candidature",candidature:cand}).then(st=>{DB=st;render();}).catch(()=>{});}
   else saveLocal();

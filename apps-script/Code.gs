@@ -85,18 +85,17 @@ function resetAll(){
   initSeed();
 }
 
-/** Les 2 candidatures réelles à soumettre au vote — exécuter une seule fois (ou via resetAll). */
+/** Les 3 candidatures (entreprises du Buro Club Lyon Part-Dieu) — exécuter une fois (ou via resetAll). */
 function initSeed(){
-  addCandidature_({created:"2026-07-20",voteEnd:"2026-08-24",company:"Association MC2A — Promeom",
-    sector:"Santé au travail — SPSTI (prévention & santé au travail interentreprises)",size:"≈ 600 salariés (groupe)",
-    tier:300,address:"20 boulevard Eugène Deruelle, 69003 Lyon (Le Britannia)",
-    referent:"Marlène Piriou (animatrice CELPD)",referentMail:"contact@clubpartdieu.fr",referentPhone:"—",sponsor:"",
-    motivation:"Issue de la fusion Agemetra / AST Grand Lyon au 01/01/2025, Promeom est le 1er opérateur de santé au travail en Auvergne-Rhône-Alpes, avec plusieurs centres dans le 3e arrondissement. Cotisation annoncée : 300 € HT (hors grille standard — palier le plus proche : 350 €).",
-    domains:["Ressources humaines","Développement durable / RSE"]});
-  addCandidature_({created:"2026-07-20",voteEnd:"2026-08-24",company:"Les Ateliers de l'Audace",
-    sector:"Chantier d'insertion — réparation/vente de vélos reconditionnés, mobilité douce en entreprise",size:"35 salariés",
-    tier:-1,address:"141 rue Pierre Corneille, 69003 Lyon",
-    referent:"Bénédicte Moreau",referentMail:"bmoreau@ateliersdelaudace.fr",referentPhone:"—",sponsor:"",
-    motivation:"Identifier des employeurs pour des salariés en insertion et promouvoir la mobilité douce (vélo) auprès des adhérents du CELPD. Palier de cotisation à confirmer avec l'animatrice avant décision.",
-    domains:["Mobilité (PMIE)","Ressources humaines","Développement durable / RSE"]});
+  var ADDR="Buro Club Lyon Part-Dieu — 129 rue Servient, 69003 Lyon (Tour Part-Dieu, 21e étage)";
+  addCandidature_({created:"2026-07-20",voteEnd:"2026-08-24",company:"JCA",sector:"À préciser",size:"—",
+    tier:-1,address:ADDR,referent:"À préciser",referentMail:"contact@clubpartdieu.fr",referentPhone:"—",sponsor:"",
+    motivation:"Entreprise domiciliée au Buro Club Lyon Part-Dieu, candidate à l'adhésion au Club. Détails à compléter avec l'animatrice.",domains:[]});
+  addCandidature_({created:"2026-07-20",voteEnd:"2026-08-24",company:"La Famille Finest Lunch",
+    sector:"Restauration / traiteur — déjeuner",size:"—",tier:-1,address:ADDR,
+    referent:"À préciser",referentMail:"contact@clubpartdieu.fr",referentPhone:"—",sponsor:"",
+    motivation:"Entreprise du quartier (Buro Club Lyon Part-Dieu) candidate à l'adhésion au CELPD.",domains:[]});
+  addCandidature_({created:"2026-07-20",voteEnd:"2026-08-24",company:"Accor",sector:"Hôtellerie / hospitalité",size:"—",
+    tier:-1,address:ADDR,referent:"À préciser",referentMail:"contact@clubpartdieu.fr",referentPhone:"—",sponsor:"",
+    motivation:"Entreprise domiciliée au Buro Club Lyon Part-Dieu, candidate à l'adhésion au CELPD.",domains:[]});
 }
