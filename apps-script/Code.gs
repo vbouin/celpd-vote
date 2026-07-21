@@ -100,4 +100,9 @@ function initSeed(){
   addCandidature_({created:"2026-07-20",voteEnd:"2026-08-24",company:"Accor",sector:"Hôtellerie / hospitalité",size:"—",
     tier:-1,address:ADDR,referent:"À préciser",referentMail:"contact@clubpartdieu.fr",referentPhone:"—",sponsor:"",
     motivation:"Entreprise domiciliée au Buro Club Lyon Part-Dieu, candidate à l'adhésion au CELPD.",domains:[]});
+  addCandidature_({created:"2026-07-20",voteEnd:"2026-08-24",company:"Buro Club Lyon Part-Dieu",
+    sector:"Centre d'affaires — bureaux, coworking, domiciliation",size:"—",tier:-1,
+    address:"129 rue Servient, 69003 Lyon (Tour Part-Dieu, 21e étage)",
+    referent:"À préciser",referentMail:"contact@clubpartdieu.fr",referentPhone:"—",sponsor:"",
+    motivation:"Centre d'affaires du quartier, candidat à l'adhésion au CELPD.",domains:["Immobilier"]});
 }
