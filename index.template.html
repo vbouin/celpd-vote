@@ -184,11 +184,11 @@ footer.legal b{color:var(--ink)}
     <div class="field"><label>Nom de votre entreprise</label>
       <input id="gt-company" type="text" placeholder="Ex. Covivio" autocomplete="organization"></div>
     <div class="field"><label>Code d'accès</label>
-      <input id="gt-code" type="text" autocapitalize="characters" placeholder="CELPD••••" autocomplete="one-time-code"></div>
+      <input id="gt-code" type="text" autocapitalize="characters" placeholder="••••••" autocomplete="one-time-code"></div>
     <button class="btn block" onclick="enter()">Entrer</button>
     <div class="err" id="gt-err"></div>
-    <div class="hint"><b>Compte invité</b> — accès par lien + code simple&nbsp;: <code>CELPD26#</code><br>
-      <span style="opacity:.75">Une entreprise = un vote par candidature.</span></div>
+    <div class="hint"><b>Compte invité</b> — une entreprise = un vote par candidature.<br>
+      <span style="opacity:.75">Saisissez le nom de votre entreprise et le code d'accès communiqué par le Club.</span></div>
     <div class="madeby"><span>Créé par</span>
       <a href="https://exoflow.fr" target="_blank" rel="noopener"><b>Exoflow</b></a>
       <span>· outils métiers IA</span></div>
@@ -331,11 +331,11 @@ async function pull(){DB=API_URL?await apiGet():normalize(loadLocal());}
 /* ===== gate ===== */
 document.getElementById("gate-logo").innerHTML=LOGO;
 async function enter(){
-  const code=document.getElementById("gt-code").value.trim();
   const err=document.getElementById("gt-err");
-  if(code!==ACCESS_CODE){err.textContent="Code d'accès incorrect.";return;}
   const company=document.getElementById("gt-company").value.trim();
   if(!company){err.textContent="Indiquez le nom de votre entreprise.";return;}
+  const code=document.getElementById("gt-code").value.trim();
+  if(code!==ACCESS_CODE){err.textContent="Code d'accès incorrect.";return;}
   SESSION={id:ckey(company),name:company};
   document.getElementById("gate").classList.add("hidden");
   document.getElementById("app").classList.remove("hidden");
@@ -347,7 +347,8 @@ async function enter(){
 }
 document.addEventListener("keydown",e=>{if(e.key==="Enter"&&!document.getElementById("gate").classList.contains("hidden"))return;
   if(e.key==="Enter"&&document.getElementById("app").classList.contains("hidden"))enter();});
-(function(){const m=(location.hash||"").match(/code=([^&]+)/);if(m){document.getElementById("gt-code").value=decodeURIComponent(m[1]);}})();
+/* accès par lien : #code=CELPD26# pré-remplit le code (sans l'afficher sur la page) */
+(function(){const m=(location.hash||"").match(/code=([^&]+)/);if(m){var f=document.getElementById("gt-code");if(f)f.value=decodeURIComponent(m[1]);}})();
 
 function reminder(){
   modal("Comment voter — "+esc(SESSION.name),
