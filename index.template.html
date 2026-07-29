@@ -110,6 +110,7 @@ main{padding:24px 0 60px}
 .badge.pending{background:var(--amber-bg);color:var(--amber)}
 .badge.acc{background:var(--green-bg);color:var(--green)}
 .badge.rej{background:var(--red-bg);color:var(--red)}
+.badge.sondage{background:#e3eef5;color:var(--accent)}
 .chip{display:inline-block;background:var(--accent);color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px}
 .votebar{height:10px;border-radius:6px;background:#e5efec;overflow:hidden;display:flex;margin:14px 0 8px}
 .votebar i{display:block;height:100%}
@@ -231,7 +232,13 @@ const INFO={
   "co:accor":{web:"https://group.accor.com",logo:"assets/logo-accor.png",
     desc:"Accor SA (SIREN 602 036 444) — groupe mondial leader de l'hospitalité : ~45 marques hôtelières (ibis, Mercure, Novotel, Sofitel…), plus de 5 600 hôtels dans ~110 pays. Plusieurs établissements sur le secteur Lyon Part‑Dieu."},
   "co:buro club lyon part-dieu":{web:"https://www.buro.com/centre/lyon-part-dieu/",logo:"assets/logo-buroclub.png",
-    desc:"BURO Club Lyon Part‑Dieu — centre d'affaires au 21e étage de la Tour Part‑Dieu (129 rue Servient) : bureaux privés, espaces de coworking, domiciliation d'entreprise, salles de réunion équipées et services aux entreprises."}
+    desc:"BURO Club Lyon Part‑Dieu — centre d'affaires au 21e étage de la Tour Part‑Dieu (129 rue Servient) : bureaux privés, espaces de coworking, domiciliation d'entreprise, salles de réunion équipées et services aux entreprises."},
+  "co:espaces part-dieu":{web:"https://espacespartdieu.com/",logo:"assets/logo-espaces.svg",
+    desc:"Centre d'événements lyonnais (fondé 2011, rénové 2023) : location d'espaces pour réunions, comités de direction, formations, coaching et séminaires, avec restauration et support technique. 2 place de Francfort, 69003 Lyon — à deux pas de la gare Part‑Dieu."},
+  "co:promeom":{web:"https://www.promeom.fr",logo:"assets/logo-promeom.png",
+    desc:"Association MC2A — Promeom (service de prévention et santé au travail interentreprises, SPSTI). Issue de la fusion Agemetra / AST Grand Lyon (01/01/2025), 1ᵉʳ opérateur de santé au travail en Auvergne‑Rhône‑Alpes ; plusieurs centres dans le 3ᵉ arrondissement."},
+  "co:les ateliers de l'audace":{web:"https://ateliersdelaudace.fr",logo:"assets/logo-ateliers.png",
+    desc:"Chantier d'insertion — réparation et vente de vélos reconditionnés, ateliers de mobilité douce en entreprise. Objectif : identifier des employeurs pour des salariés en insertion et promouvoir le vélo auprès des entreprises."}
 };
 function candWeb(c){return c.website||(INFO[ckey(c.company)]||{}).web||"";}
 function candDesc(c){return c.desc||(INFO[ckey(c.company)]||{}).desc||"";}
@@ -251,19 +258,18 @@ function seed(){return{
   candidatures:[
     {id:1,status:"pending",created:"2026-07-20",voteEnd:"2026-08-24",company:"JCA",
       sector:"Coopérative scientifique — conseil & R&D (sciences appliquées)",size:"—",tier:-1,
-      address:"Lyon — Auvergne‑Rhône‑Alpes (adresse lyonnaise à préciser)",
+      address:"Lyon — Auvergne-Rhône-Alpes (adresse lyonnaise à préciser)",
       referent:"À préciser",referentMail:"contact@clubpartdieu.fr",referentPhone:"—",sponsor:"",
-      motivation:"Candidature à l'adhésion au CELPD. Coopérative implantée en Auvergne‑Rhône‑Alpes.",
+      motivation:"Candidature à l'adhésion au CELPD. Coopérative implantée en Auvergne-Rhône-Alpes.",
       domains:["Innovation / IA"],votes:[]},
     {id:2,status:"pending",created:"2026-07-20",voteEnd:"2026-08-24",company:"La Famille Finest Lunch",
-      sector:"Restauration / traiteur — déjeuner",size:"—",tier:-1,address:"Buro Club Lyon Part‑Dieu — 129 rue Servient, 69003 Lyon (Tour Part‑Dieu, 21e étage)",
+      sector:"Restauration / traiteur — déjeuner",size:"—",tier:-1,address:"Buro Club Lyon Part-Dieu — 129 rue Servient, 69003 Lyon (Tour Part-Dieu, 21e étage)",
       referent:"À préciser",referentMail:"contact@clubpartdieu.fr",referentPhone:"—",sponsor:"",
-      motivation:"Entreprise du quartier (Buro Club Lyon Part‑Dieu) candidate à l'adhésion au CELPD.",
+      motivation:"Entreprise du quartier (Buro Club Lyon Part-Dieu) candidate à l'adhésion au CELPD.",
       domains:[],votes:[]},
-    {id:3,status:"pending",created:"2026-07-20",voteEnd:"2026-08-24",company:"Accor",
-      sector:"Hôtellerie / hospitalité",size:"—",tier:-1,address:"Buro Club Lyon Part‑Dieu — 129 rue Servient, 69003 Lyon (Tour Part‑Dieu, 21e étage)",
+    {id:3,status:"pending",created:"2026-07-20",voteEnd:"2026-08-24",company:"Accor",sector:"Hôtellerie / hospitalité",size:"—",tier:-1,address:"Buro Club Lyon Part-Dieu — 129 rue Servient, 69003 Lyon (Tour Part-Dieu, 21e étage)",
       referent:"À préciser",referentMail:"contact@clubpartdieu.fr",referentPhone:"—",sponsor:"",
-      motivation:"Entreprise domiciliée au Buro Club Lyon Part‑Dieu, candidate à l'adhésion au CELPD.",
+      motivation:"Entreprise domiciliée au Buro Club Lyon Part-Dieu, candidate à l'adhésion au CELPD.",
       domains:[],votes:[]},
     {id:4,status:"pending",created:"2026-07-20",voteEnd:"2026-08-24",company:"Buro Club Lyon Part-Dieu",
       sector:"Centre d'affaires — bureaux, coworking, domiciliation",size:"—",tier:-1,
@@ -271,8 +277,26 @@ function seed(){return{
       referent:"À préciser",referentMail:"contact@clubpartdieu.fr",referentPhone:"—",sponsor:"",
       motivation:"Centre d'affaires du quartier, candidat à l'adhésion au CELPD.",
       domains:["Immobilier"],votes:[]},
+    {id:5,status:"pending",created:"2026-07-20",voteEnd:"2026-08-24",company:"Espaces Part-Dieu",
+      sector:"Centre d'événements — location de salles, séminaires, formations",size:"—",tier:-1,
+      address:"2 place de Francfort, 69003 Lyon (proche gare Part-Dieu)",
+      referent:"À préciser",referentMail:"contact@clubpartdieu.fr",referentPhone:"—",sponsor:"",
+      motivation:"Centre d'événements du quartier, candidat à l'adhésion au CELPD.",
+      domains:["Culture & communication"],votes:[]},
+    {id:6,status:"sondage",created:"2026-07-20",voteEnd:"2026-08-24",company:"Promeom",
+      sector:"Santé au travail — SPSTI (prévention & santé au travail interentreprises)",size:"≈ 600 salariés (groupe)",tier:300,
+      address:"20 boulevard Eugène Deruelle, 69003 Lyon (Le Britannia)",
+      referent:"À préciser",referentMail:"contact@clubpartdieu.fr",referentPhone:"—",sponsor:"",
+      motivation:"Sondage d'intérêt : seriez-vous favorable à l'adhésion de cette structure au Club ?",
+      domains:["Ressources humaines"],votes:[]},
+    {id:7,status:"sondage",created:"2026-07-20",voteEnd:"2026-08-24",company:"Les Ateliers de l'Audace",
+      sector:"Chantier d'insertion — vélos reconditionnés, mobilité douce",size:"35 salariés",tier:-1,
+      address:"141 rue Pierre Corneille, 69003 Lyon",
+      referent:"Bénédicte Moreau",referentMail:"bmoreau@ateliersdelaudace.fr",referentPhone:"—",sponsor:"",
+      motivation:"Sondage d'intérêt : seriez-vous favorable à l'adhésion de cette structure au Club ?",
+      domains:["Mobilité (PMIE)"],votes:[]},
   ],
-  seq:5
+  seq:8
 };}
 /* ============================================================
    SAUVEGARDE DES VOTES — deux modes automatiques :
@@ -344,8 +368,10 @@ function myVote(c){return c.votes.find(v=>v.by===SESSION.id);}
 
 /* ===== render (page unique) ===== */
 function render(){
-  const pending=DB.candidatures.filter(c=>c.status==="pending");
-  const decided=DB.candidatures.filter(c=>c.status!=="pending").sort((a,b)=>(b.decided||"").localeCompare(a.decided||""));
+  const cand=DB.candidatures.filter(c=>c.status!=="sondage");
+  const sondage=DB.candidatures.filter(c=>c.status==="sondage");
+  const pending=cand.filter(c=>c.status==="pending");
+  const decided=cand.filter(c=>c.status==="accepted"||c.status==="rejected").sort((a,b)=>(b.decided||"").localeCompare(a.decided||""));
   document.getElementById("view").innerHTML=`
     <div class="hero">
       <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="assets/celpd-login-poster.jpg"
@@ -358,14 +384,19 @@ function render(){
 
     <div class="grid k4">
       ${stat(pending.length,"En attente")}
-      ${stat(DB.candidatures.filter(c=>c.status==="accepted").length,"Acceptées")}
-      ${stat(DB.candidatures.filter(c=>c.status==="rejected").length,"Refusées")}
+      ${stat(cand.filter(c=>c.status==="accepted").length,"Acceptées")}
+      ${stat(cand.filter(c=>c.status==="rejected").length,"Refusées")}
       ${stat(DB.candidatures.reduce((s,c)=>s+c.votes.length,0),"Votes exprimés")}
     </div>
 
     <div class="sec-head"><h3>À voter</h3><span class="count">${pending.length}</span></div>
     ${pending.length?`<div class="grid">${pending.map(candCard).join("")}</div>`:
       `<div class="card empty">Aucune candidature en attente.</div>`}
+
+    ${sondage.length?`
+    <div class="sec-head"><h3>🗳️ Sondage d'intérêt</h3><span class="count">${sondage.length}</span></div>
+    <p style="font-size:13px;color:var(--muted);margin:-4px 0 12px">Vote consultatif : donnez votre avis sur ces structures (une entreprise = un avis).</p>
+    <div class="grid">${sondage.map(candCard).join("")}</div>`:""}
 
     <div class="sec-head"><h3>Historique & résultats</h3><span class="count">${decided.length}</span></div>
     <div class="grid k2">${decided.map(histCard).join("")}</div>
@@ -382,7 +413,7 @@ function candCard(c){
       ${candLogo(c)?`<img class="clogo" src="${esc(candLogo(c))}" alt="Logo ${esc(c.company)}" onerror="this.style.display='none'">`:""}
       <div><div class="co">${esc(c.company)} <span class="chip">${tierShort(c.tier)}</span></div>
       <div class="sector">${esc(c.sector)} · ${esc(c.size)}</div></div>
-    </div><span class="badge pending">● En attente</span></div>
+    </div>${c.status==="sondage"?'<span class="badge sondage">🗳️ Sondage</span>':'<span class="badge pending">● En attente</span>'}</div>
     <dl><dt>Référent</dt><dd>${esc(c.referent)} — <a href="mailto:${esc(c.referentMail)}">${esc(c.referentMail)}</a></dd>
       <dt>Adresse</dt><dd>${esc(c.address)}</dd>${c.sponsor?`<dt>Parrain·e</dt><dd>${esc(c.sponsor)}</dd>`:""}
       <dt>Déposée le</dt><dd>${fmt(c.created)}</dd></dl>

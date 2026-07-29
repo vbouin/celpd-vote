@@ -60,7 +60,7 @@ function addCandidature_(c){
   var cs = sheet_("Candidatures", CAND_HEADERS);
   var maxId = rows_(cs).reduce(function(m,r){ return Math.max(m, Number(r.id)||0); }, 0);
   var id = maxId+1;
-  cs.appendRow([id, c.created, c.voteEnd||"", "pending", "", c.company, c.sector, c.size||"—",
+  cs.appendRow([id, c.created, c.voteEnd||"", c.status||"pending", "", c.company, c.sector, c.size||"—",
     c.tier||0, c.address, c.referent, c.referentMail, c.referentPhone||"—", c.sponsor||"",
     c.motivation, JSON.stringify(c.domains||[])]);
   return id;
@@ -105,4 +105,20 @@ function initSeed(){
     address:"129 rue Servient, 69003 Lyon (Tour Part-Dieu, 21e étage)",
     referent:"À préciser",referentMail:"contact@clubpartdieu.fr",referentPhone:"—",sponsor:"",
     motivation:"Centre d'affaires du quartier, candidat à l'adhésion au CELPD.",domains:["Immobilier"]});
+  addCandidature_({created:"2026-07-20",voteEnd:"2026-08-24",company:"Espaces Part-Dieu",
+    sector:"Centre d'événements — location de salles, séminaires, formations",size:"—",tier:-1,
+    address:"2 place de Francfort, 69003 Lyon (proche gare Part-Dieu)",
+    referent:"À préciser",referentMail:"contact@clubpartdieu.fr",referentPhone:"—",sponsor:"",
+    motivation:"Centre d'événements du quartier, candidat à l'adhésion au CELPD.",domains:["Culture & communication"]});
+  // --- SONDAGE (avis consultatif, status "sondage") ---
+  addCandidature_({status:"sondage",created:"2026-07-20",voteEnd:"2026-08-24",company:"Promeom",
+    sector:"Santé au travail — SPSTI",size:"≈ 600 salariés (groupe)",tier:300,
+    address:"20 boulevard Eugène Deruelle, 69003 Lyon (Le Britannia)",
+    referent:"À préciser",referentMail:"contact@clubpartdieu.fr",referentPhone:"—",sponsor:"",
+    motivation:"Sondage d'intérêt : seriez-vous favorable à l'adhésion de cette structure au Club ?",domains:["Ressources humaines"]});
+  addCandidature_({status:"sondage",created:"2026-07-20",voteEnd:"2026-08-24",company:"Les Ateliers de l'Audace",
+    sector:"Chantier d'insertion — vélos reconditionnés, mobilité douce",size:"35 salariés",tier:-1,
+    address:"141 rue Pierre Corneille, 69003 Lyon",
+    referent:"Bénédicte Moreau",referentMail:"bmoreau@ateliersdelaudace.fr",referentPhone:"—",sponsor:"",
+    motivation:"Sondage d'intérêt : seriez-vous favorable à l'adhésion de cette structure au Club ?",domains:["Mobilité (PMIE)"]});
 }
