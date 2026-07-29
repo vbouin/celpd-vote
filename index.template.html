@@ -243,6 +243,9 @@ const INFO={
 function candWeb(c){return c.website||(INFO[ckey(c.company)]||{}).web||"";}
 function candDesc(c){return c.desc||(INFO[ckey(c.company)]||{}).desc||"";}
 function candLogo(c){return c.logo||(INFO[ckey(c.company)]||{}).logo||"";}
+/* Sondage = consultatif : par status "sondage" OU par nom (robuste même si le Sheet stocke "pending") */
+const SONDAGE=new Set(["co:promeom","co:les ateliers de l'audace"]);
+function isSondage(c){return c.status==="sondage"||SONDAGE.has(ckey(c.company));}
 const CA_VOTERS=7, QUORUM=4;
 const ACCESS_CODE="CELPD26#";
 let SESSION=null;
@@ -368,8 +371,8 @@ function myVote(c){return c.votes.find(v=>v.by===SESSION.id);}
 
 /* ===== render (page unique) ===== */
 function render(){
-  const cand=DB.candidatures.filter(c=>c.status!=="sondage");
-  const sondage=DB.candidatures.filter(c=>c.status==="sondage");
+  const cand=DB.candidatures.filter(c=>!isSondage(c));
+  const sondage=DB.candidatures.filter(c=>isSondage(c));
   const pending=cand.filter(c=>c.status==="pending");
   const decided=cand.filter(c=>c.status==="accepted"||c.status==="rejected").sort((a,b)=>(b.decided||"").localeCompare(a.decided||""));
   document.getElementById("view").innerHTML=`
@@ -413,7 +416,7 @@ function candCard(c){
       ${candLogo(c)?`<img class="clogo" src="${esc(candLogo(c))}" alt="Logo ${esc(c.company)}" onerror="this.style.display='none'">`:""}
       <div><div class="co">${esc(c.company)} <span class="chip">${tierShort(c.tier)}</span></div>
       <div class="sector">${esc(c.sector)} · ${esc(c.size)}</div></div>
-    </div>${c.status==="sondage"?'<span class="badge sondage">🗳️ Sondage</span>':'<span class="badge pending">● En attente</span>'}</div>
+    </div>${isSondage(c)?'<span class="badge sondage">🗳️ Sondage</span>':'<span class="badge pending">● En attente</span>'}</div>
     <dl><dt>Référent</dt><dd>${esc(c.referent)} — <a href="mailto:${esc(c.referentMail)}">${esc(c.referentMail)}</a></dd>
       <dt>Adresse</dt><dd>${esc(c.address)}</dd>${c.sponsor?`<dt>Parrain·e</dt><dd>${esc(c.sponsor)}</dd>`:""}
       <dt>Déposée le</dt><dd>${fmt(c.created)}</dd></dl>
